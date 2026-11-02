@@ -40,7 +40,7 @@ class RegisterViewModel(
 
         viewModelScope.launch {
             registerUseCase(actual.email, actual.contrasena).fold(
-                onSuccess = { _state.update { it.copy(cargando = false) } },
+                onSuccess = { _state.value = RegisterUiState() },
                 onFailure = { error ->
                     val e = error.aErrorDeFormulario()
                     _state.update {

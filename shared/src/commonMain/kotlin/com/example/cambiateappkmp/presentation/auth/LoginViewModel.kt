@@ -41,7 +41,7 @@ class LoginViewModel(
 
         viewModelScope.launch {
             loginUseCase(actual.email, actual.contrasena).fold(
-                onSuccess = { _state.update { it.copy(cargando = false) } },
+                onSuccess = { _state.value = LoginUiState() },
                 onFailure = { error ->
                     val e = error.aErrorDeFormulario()
                     _state.update {
