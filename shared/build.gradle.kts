@@ -21,6 +21,7 @@ kotlin {
        }
        withHostTest {
            isIncludeAndroidResources = true
+           isReturnDefaultValues = true
        }
        withDeviceTestBuilder {
            sourceSetTreeName = "test"
