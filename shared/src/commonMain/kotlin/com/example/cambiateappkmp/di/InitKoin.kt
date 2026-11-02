@@ -6,6 +6,9 @@ import org.koin.dsl.KoinAppDeclaration
 fun initKoin(usarFake: Boolean = false, appDeclaration: KoinAppDeclaration = {}) {
     startKoin {
         appDeclaration()
-        modules(if (usarFake) authFakeModule else authModule)
+        modules(
+            if (usarFake) authFakeModule else authModule,
+            presentationModule,
+        )
     }
 }
