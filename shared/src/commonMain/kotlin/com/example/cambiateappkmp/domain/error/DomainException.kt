@@ -1,6 +1,6 @@
 package com.example.cambiateappkmp.domain.error
 
-enum class CampoInvalido { EMAIL, CONTRASENA }
+enum class CampoInvalido { EMAIL, CONTRASENA, NOMBRE, FOTO }
 
 sealed class DomainException(cause: Throwable? = null) : Exception(cause) {
     object CredencialesInvalidas : DomainException()

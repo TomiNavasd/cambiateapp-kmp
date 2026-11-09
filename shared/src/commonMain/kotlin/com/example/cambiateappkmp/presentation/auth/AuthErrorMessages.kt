@@ -3,7 +3,6 @@ package com.example.cambiateappkmp.presentation.auth
 import com.example.cambiateappkmp.domain.error.CampoInvalido
 import com.example.cambiateappkmp.domain.error.DomainException
 
-/** Lo que una pantalla de auth muestra cuando algo sale mal: un error por campo o uno general. */
 data class ErrorDeFormulario(
     val email: String? = null,
     val contrasena: String? = null,
@@ -20,6 +19,8 @@ fun Throwable.aErrorDeFormulario(): ErrorDeFormulario = when (this) {
     is DomainException.Validacion -> when (this.campo) {
         CampoInvalido.EMAIL -> ErrorDeFormulario(email = "Completá el email")
         CampoInvalido.CONTRASENA -> ErrorDeFormulario(contrasena = "Ingresá tu contraseña")
+        CampoInvalido.NOMBRE, CampoInvalido.FOTO ->
+            ErrorDeFormulario(general = "Revisá los datos ingresados")
     }
 
     is DomainException.CredencialesInvalidas ->
