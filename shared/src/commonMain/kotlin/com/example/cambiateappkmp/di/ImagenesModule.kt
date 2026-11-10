@@ -1,13 +1,29 @@
 package com.example.cambiateappkmp.di
 
 import com.example.cambiateappkmp.data.fake.FakeImageStorageRepository
+import com.example.cambiateappkmp.data.repository.CloudinaryImageStorageRepository
 import com.example.cambiateappkmp.domain.repository.ImageStorageRepository
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
-// Versión real. TODO (T3): reemplazar por la implementación de Cloudinary.
-// Mientras tanto usa el fake para que la app no falle al abrir el formulario.
+private fun crearClienteHttp() = HttpClient {
+    install(ContentNegotiation) {
+        json(Json { ignoreUnknownKeys = true })
+    }
+    install(HttpTimeout) {
+        requestTimeoutMillis = 30_000
+    }
+}
+
+// Versión real: sube las fotos a Cloudinary.
 val imagenesModule = module {
-    single<ImageStorageRepository> { FakeImageStorageRepository() }
+    includes(lectorImagenModule)
+    single { crearClienteHttp() }
+    single<ImageStorageRepository> { CloudinaryImageStorageRepository(get(), get()) }
 }
 
 // Versión para pruebas y escritorio: siempre usa el fake.
