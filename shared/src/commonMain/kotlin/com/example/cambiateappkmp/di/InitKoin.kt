@@ -8,6 +8,7 @@ fun initKoin(usarFake: Boolean = false, appDeclaration: KoinAppDeclaration = {})
         appDeclaration()
         modules(
             if (usarFake) authFakeModule else authModule,
+            if (usarFake) prendasFakeModule else prendasModule,
             presentationModule,
         )
     }
