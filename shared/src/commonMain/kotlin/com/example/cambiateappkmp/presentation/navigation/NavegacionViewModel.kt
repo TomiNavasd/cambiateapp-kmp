@@ -20,8 +20,8 @@ class NavegacionViewModel : ViewModel() {
         return true
     }
 
-    fun reiniciar() {
+    fun reiniciar(inicio: Ruta = Ruta.Login) {
         pila.clear()
-        pila.add(Ruta.Login)
+        pila.add(inicio)
     }
 }
