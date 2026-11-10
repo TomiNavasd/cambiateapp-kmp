@@ -33,6 +33,7 @@ import com.example.cambiateappkmp.presentation.components.EstadoCargando
 import com.example.cambiateappkmp.presentation.components.EstadoError
 import com.example.cambiateappkmp.presentation.components.EstadoVacio
 import com.example.cambiateappkmp.presentation.components.SelectorFoto
+import com.example.cambiateappkmp.presentation.navigation.ManejarAtras
 import com.example.cambiateappkmp.presentation.wardrobe.etiqueta
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -51,6 +52,11 @@ fun AltaEdicionRoute(
             viewModel.cerrar()
             onGuardada()
         }
+    }
+
+    ManejarAtras(habilitado = true) {
+        viewModel.cerrar()
+        onVolver()
     }
 
     AltaEdicionScreen(
@@ -117,7 +123,6 @@ private fun Formulario(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // La foto la sube el selector y devuelve la URL ya lista.
         SelectorFoto(
             fotoUrl = state.fotoUrl,
             onFotoSubida = { url -> onEvent(AltaEdicionUiEvent.FotoSubida(url)) },
