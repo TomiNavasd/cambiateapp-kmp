@@ -90,3 +90,57 @@ Cubren los casos de uso de autenticación, la traducción de errores de Firebase
 
 Las reglas de Firestore están en [`firestore.rules`](firestore.rules): cada usuario solo puede leer y modificar los documentos cuyo `userId` coincide con el suyo, y todo lo demás está cerrado. No se publica ningún secreto en el repositorio: `google-services.json` y `local.properties` están en `.gitignore`.
 
+## Fotos de prendas (cámara, galería y Cloudinary)
+
+### Flujo completo
+
+1. `SelectorFoto` muestra la foto actual y los botones **Galería** y **Cámara**.
+2. `SelectorImagen` (expect/actual) abre la galería o la cámara y devuelve la dirección (uri) de la imagen elegida.
+3. `SelectorFoto` llama a `ImageStorageRepository.subirImagen(uri)`.
+4. `CloudinaryImageStorageRepository` le pide los bytes a `LectorDeImagen` (expect/actual por plataforma) y hace un POST multipart a Cloudinary con Ktor, usando un *upload preset* sin firma.
+5. Cloudinary responde con `secure_url`. El repositorio la devuelve y `SelectorFoto` se la entrega a quien lo usa mediante `onFotoSubida`.
+6. La URL se guarda en el campo `fotoUrl` de la prenda, en Firestore.
+7. `FotoPrenda` muestra la foto con Coil. Si no hay URL muestra "Sin foto", y si falla la carga muestra un mensaje.
+
+### Qué va con expect/actual
+
+| Declaración (`commonMain`) | Android | Escritorio (JVM) |
+|---|---|---|
+| `rememberSelectorImagen` (`SelectorImagen`) | Galería con `PickVisualMedia` y cámara con `TakePicture`, que guarda la foto en la caché de la app mediante `FileProvider` | Diálogo de archivos de Java (`FileDialog`). No hay cámara: `camaraDisponible` es `false` y el botón **Cámara** no se muestra |
+| `lectorImagenModule` (registra el `LectorDeImagen`) | Lee la uri con `ContentResolver`, fuera del hilo principal | Lee el archivo a partir de la uri (`File(URI)`) |
+| `ManejarAtras` | `BackHandler` | No hace nada |
+
+### Configuración
+
+- `CloudinaryConfig` tiene el *cloud name* y el *upload preset*, que son datos públicos (los mismos que usa la app nativa). El preset es *unsigned*, por eso no se usa ninguna API Key ni API Secret y no hay secretos en el repositorio.
+- En Android la cámara usa un `FileProvider` (`${applicationId}.fileprovider`, con `res/xml/file_paths.xml`). Así la foto se guarda en la caché de la app y no hace falta pedir el permiso `CAMERA`.
+- En escritorio no hay cámara: solo se puede elegir un archivo.
+
+### Modo fake vs. real
+
+`USAR_AUTH_FAKE` (en `CambiateApplication.kt`) cambia **juntos** la autenticación, las prendas y la subida de fotos. Con `true` todo funciona en memoria: la subida de fotos devuelve siempre una URL de ejemplo y no se conecta a Cloudinary. Con `false` usa Firebase y Cloudinary reales. Debe estar en `false` al hacer commit.
+
+### Reglas de Firestore (pendiente de publicar)
+
+Las reglas están en [`firestore.rules`](firestore.rules). Antes de publicarlas hay que probarlas en el **Rules Playground** de la consola de Firebase (Firestore, pestaña *Reglas*). Para la lectura, la edición y el borrado se necesita una prenda de prueba que ya exista en la base. Casos a probar en la colección `prendas`:
+
+| Caso | Operación | Usuario | Resultado esperado |
+|---|---|---|---|
+| Leer una prenda propia | `get` | autenticado, `userId` = su uid | Permitido |
+| Leer una prenda de otro usuario | `get` | autenticado, `userId` distinto del suyo | Denegado |
+| Leer sin autenticar | `get` | sin autenticar | Denegado |
+| Crear con mi `userId` | `create` | autenticado, `userId` = su uid | Permitido |
+| Crear con el `userId` de otro | `create` | autenticado, `userId` distinto del suyo | Denegado |
+| Editar una prenda propia | `update` | autenticado, `userId` = su uid | Permitido |
+| Borrar la prenda de otro usuario | `delete` | autenticado, `userId` distinto del suyo | Denegado |
+
+Publicar las reglas **también afecta a la app nativa**, porque comparte la misma base de datos con esta versión. Por eso se publican recién después de probarlas.
+
+### Cómo correr los tests de fotos
+
+```
+.\gradlew.bat :shared:jvmTest
+```
+
+Incluye los tests del repositorio de Cloudinary (con el `MockEngine` de Ktor, sin internet) y del almacenamiento falso.
+
