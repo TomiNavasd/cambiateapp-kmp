@@ -19,6 +19,7 @@ import com.example.cambiateappkmp.presentation.auth.LoginRoute
 import com.example.cambiateappkmp.presentation.auth.RegisterRoute
 import com.example.cambiateappkmp.presentation.components.BotonPrincipal
 import com.example.cambiateappkmp.presentation.components.PantallaCarga
+import com.example.cambiateappkmp.presentation.detalle.DetallePrendaRoute
 import com.example.cambiateappkmp.presentation.session.SessionUiState
 import com.example.cambiateappkmp.presentation.session.SessionViewModel
 import com.example.cambiateappkmp.presentation.wardrobe.WardrobeListRoute
@@ -32,7 +33,6 @@ fun AppNavHost(
 ) {
     val sesion by sessionViewModel.estado.collectAsState()
 
-    // Cada vez que cambia la sesión, la navegación vuelve a empezar desde la pantalla que corresponde.
     LaunchedEffect(sesion) {
         when (sesion) {
             is SessionUiState.ConSesion -> navegacion.reiniciar(Ruta.Armario)
@@ -51,10 +51,10 @@ fun AppNavHost(
                 onCerrarSesion = sessionViewModel::cerrarSesion,
             )
 
-            // Provisorias: se reemplazan en las etapas 4 (detalle) y 5 (alta y edición).
-            is Ruta.DetallePrenda -> PantallaProvisoria(
-                titulo = "Detalle de la prenda ${ruta.id}",
+            is Ruta.DetallePrenda -> DetallePrendaRoute(
+                id = ruta.id,
                 onVolver = { navegacion.volver() },
+                onEditarClick = { navegacion.ir(Ruta.AltaEdicion(ruta.id)) },
             )
 
             is Ruta.AltaEdicion -> PantallaProvisoria(
@@ -62,7 +62,6 @@ fun AppNavHost(
                 onVolver = { navegacion.volver() },
             )
 
-            // Un instante, hasta que el LaunchedEffect de arriba reinicia la pila.
             else -> PantallaCarga()
         }
 
@@ -71,7 +70,6 @@ fun AppNavHost(
                 onIrALogin = { navegacion.volver() },
             )
 
-            // Login, y cualquier ruta de sesión que quede un instante al cerrarla.
             else -> LoginRoute(
                 onIrARegistro = { navegacion.ir(Ruta.Registro) },
             )

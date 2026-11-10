@@ -2,6 +2,7 @@ package com.example.cambiateappkmp.di
 
 import com.example.cambiateappkmp.presentation.auth.LoginViewModel
 import com.example.cambiateappkmp.presentation.auth.RegisterViewModel
+import com.example.cambiateappkmp.presentation.detalle.DetallePrendaViewModel
 import com.example.cambiateappkmp.presentation.navigation.NavegacionViewModel
 import com.example.cambiateappkmp.presentation.session.SessionViewModel
 import com.example.cambiateappkmp.presentation.wardrobe.WardrobeViewModel
@@ -14,4 +15,5 @@ val presentationModule = module {
     viewModelOf(::SessionViewModel)
     viewModelOf(::NavegacionViewModel)
     viewModelOf(::WardrobeViewModel)
+    viewModelOf(::DetallePrendaViewModel)
 }

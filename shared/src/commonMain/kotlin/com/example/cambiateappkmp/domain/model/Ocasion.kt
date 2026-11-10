@@ -1,3 +1,3 @@
 package com.example.cambiateappkmp.domain.model
 
-enum class Ocasion { CASUAL, TRABAJO, FORMAL, FIESTA, DEPORTE }
+enum class Ocasion { TRABAJO, FACULTAD, SALIDA, CASAMIENTO, DEPORTE, CASUAL }
