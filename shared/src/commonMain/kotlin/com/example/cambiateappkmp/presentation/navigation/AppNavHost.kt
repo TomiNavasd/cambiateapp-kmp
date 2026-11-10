@@ -30,6 +30,10 @@ fun AppNavHost(
         }
     }
 
+    ManejarAtras(habilitado = navegacion.pila.size > 1) {
+        navegacion.volver()
+    }
+
     when (sesion) {
         SessionUiState.Cargando -> PantallaCarga()
 
