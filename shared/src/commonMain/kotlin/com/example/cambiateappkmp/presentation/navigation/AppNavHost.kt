@@ -1,23 +1,12 @@
 package com.example.cambiateappkmp.presentation.navigation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.example.cambiateappkmp.presentation.altaedicion.AltaEdicionRoute
 import com.example.cambiateappkmp.presentation.auth.LoginRoute
 import com.example.cambiateappkmp.presentation.auth.RegisterRoute
-import com.example.cambiateappkmp.presentation.components.BotonPrincipal
 import com.example.cambiateappkmp.presentation.components.PantallaCarga
 import com.example.cambiateappkmp.presentation.detalle.DetallePrendaRoute
 import com.example.cambiateappkmp.presentation.session.SessionUiState
@@ -57,9 +46,10 @@ fun AppNavHost(
                 onEditarClick = { navegacion.ir(Ruta.AltaEdicion(ruta.id)) },
             )
 
-            is Ruta.AltaEdicion -> PantallaProvisoria(
-                titulo = if (ruta.id == null) "Nueva prenda" else "Editar prenda ${ruta.id}",
+            is Ruta.AltaEdicion -> AltaEdicionRoute(
+                id = ruta.id,
                 onVolver = { navegacion.volver() },
+                onGuardada = { navegacion.volver() },
             )
 
             else -> PantallaCarga()
@@ -73,38 +63,6 @@ fun AppNavHost(
             else -> LoginRoute(
                 onIrARegistro = { navegacion.ir(Ruta.Registro) },
             )
-        }
-    }
-}
-
-@Composable
-private fun PantallaProvisoria(
-    titulo: String,
-    onVolver: () -> Unit,
-) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .safeContentPadding()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = titulo,
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = "Próximamente",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            BotonPrincipal(texto = "Volver", alClick = onVolver)
         }
     }
 }
