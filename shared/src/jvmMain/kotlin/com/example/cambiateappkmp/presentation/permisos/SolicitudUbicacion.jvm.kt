@@ -11,10 +11,10 @@ actual fun rememberSolicitudUbicacion(onResultado: (Boolean) -> Unit): Solicitud
 
     return remember {
         object : SolicitudPermiso {
-            // En escritorio no hay ubicación: la solicitud siempre dice que no.
-            override val concedido: Boolean = false
+            // En escritorio no hay permiso que pedir: la ubicación aproximada se calcula por IP.
+            override val concedido: Boolean = true
 
-            override fun pedir() = alResponder(false)
+            override fun pedir() = alResponder(true)
         }
     }
 }

@@ -11,10 +11,10 @@ actual fun rememberSolicitudNotificaciones(onResultado: (Boolean) -> Unit): Soli
 
     return remember {
         object : SolicitudPermiso {
-            // En escritorio no hay notificaciones: la solicitud siempre dice que no.
-            override val concedido: Boolean = false
+            // En escritorio no hay un permiso que pedir para las notificaciones.
+            override val concedido: Boolean = true
 
-            override fun pedir() = alResponder(false)
+            override fun pedir() = alResponder(true)
         }
     }
 }
