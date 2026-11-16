@@ -150,14 +150,6 @@ fun NotificacionesScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            if (recordatoriosSoloConLaAppAbierta) {
-                Text(
-                    text = "En escritorio los recordatorios solo funcionan mientras la app está abierta.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,

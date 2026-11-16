@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cambiateappkmp.domain.model.TemaApp
+import com.example.cambiateappkmp.presentation.notificaciones.notificacionesDisponibles
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -94,20 +95,22 @@ fun AjustesScreen(
                 }
             }
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+            if (notificacionesDisponibles) {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-            Text(text = "Notificaciones", style = MaterialTheme.typography.titleMedium)
+                Text(text = "Notificaciones", style = MaterialTheme.typography.titleMedium)
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = onNotificacionesClick)
-                    .padding(vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(text = "Recordatorios del clima", style = MaterialTheme.typography.bodyLarge)
-                Text(text = "›", style = MaterialTheme.typography.titleLarge)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onNotificacionesClick)
+                        .padding(vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(text = "Recordatorios del clima", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "›", style = MaterialTheme.typography.titleLarge)
+                }
             }
         }
     }
