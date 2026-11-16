@@ -56,7 +56,7 @@ fun AppNavHost(
                 onGuardada = { navegacion.volver() },
             )
 
-            else -> PantallaCarga()
+            else -> PantallasSemana3(ruta, navegacion)
         }
 
         SessionUiState.SinSesion -> when (navegacion.actual) {
