@@ -43,6 +43,8 @@ fun WardrobeListRoute(
     onPrendaClick: (String) -> Unit,
     onNuevaClick: () -> Unit,
     onCerrarSesion: () -> Unit,
+    onMapaClick: (() -> Unit)? = null,
+    onAjustesClick: (() -> Unit)? = null,
     viewModel: WardrobeViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -53,6 +55,8 @@ fun WardrobeListRoute(
         onPrendaClick = onPrendaClick,
         onNuevaClick = onNuevaClick,
         onCerrarSesion = onCerrarSesion,
+        onMapaClick = onMapaClick,
+        onAjustesClick = onAjustesClick,
     )
 }
 
@@ -65,6 +69,8 @@ fun WardrobeListScreen(
     onNuevaClick: () -> Unit,
     onCerrarSesion: () -> Unit,
     modifier: Modifier = Modifier,
+    onMapaClick: (() -> Unit)? = null,
+    onAjustesClick: (() -> Unit)? = null,
 ) {
     // Estado puramente visual (diálogo abierto): vive en la pantalla.
     var dialogoAbierto by remember { mutableStateOf(false) }
@@ -76,6 +82,12 @@ fun WardrobeListScreen(
             TopAppBar(
                 title = { Text("Mi armario", style = MaterialTheme.typography.headlineSmall) },
                 actions = {
+                    onMapaClick?.let { alClick ->
+                        TextButton(onClick = alClick, contentPadding = PaddingValues(horizontal = 8.dp)) { Text("Mapa") }
+                    }
+                    onAjustesClick?.let { alClick ->
+                        TextButton(onClick = alClick, contentPadding = PaddingValues(horizontal = 8.dp)) { Text("Ajustes") }
+                    }
                     TextButton(onClick = { dialogoAbierto = true }) { Text("Cerrar sesión") }
                 },
             )

@@ -42,6 +42,8 @@ fun AppNavHost(
                 onPrendaClick = { id -> navegacion.ir(Ruta.DetallePrenda(id)) },
                 onNuevaClick = { navegacion.ir(Ruta.AltaEdicion(null)) },
                 onCerrarSesion = sessionViewModel::cerrarSesion,
+                onMapaClick = { navegacion.ir(RutaMapa) },
+                onAjustesClick = { navegacion.ir(RutaAjustes) },
             )
 
             is Ruta.DetallePrenda -> DetallePrendaRoute(
