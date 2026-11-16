@@ -43,6 +43,10 @@ kotlin {
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
         }
+        jvmTest.dependencies {
+            // Skiko, la librería nativa de dibujo de Compose Desktop: hace falta para decodificar imágenes en los tests.
+            implementation(compose.desktop.currentOs)
+        }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
