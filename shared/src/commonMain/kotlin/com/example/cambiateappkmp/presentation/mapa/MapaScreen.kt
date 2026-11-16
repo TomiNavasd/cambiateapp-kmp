@@ -122,6 +122,15 @@ private fun ContenidoMapa(
             modifier = Modifier.fillMaxWidth().height(260.dp),
         )
 
+        if (state.ubicacion.aproximada) {
+            Text(
+                text = "Ubicación aproximada (según tu conexión a internet)",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            )
+        }
+
         LazyColumn(
             modifier = Modifier.weight(1f).fillMaxWidth(),
             contentPadding = PaddingValues(16.dp),
