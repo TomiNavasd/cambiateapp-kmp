@@ -86,6 +86,53 @@ En `androidApp/.../CambiateApplication.kt` está la constante `USAR_AUTH_FAKE`. 
 
 Cubren los casos de uso de autenticación, la traducción de errores de Firebase y el módulo de Koin, usando repositorios falsos (no necesitan emulador ni internet).
 
+## Versión de escritorio
+
+La app también corre en escritorio (JVM, Compose Desktop), con el mismo código de pantallas y de dominio que Android.
+
+```
+.\gradlew.bat :desktopApp:run
+```
+
+Para probar sin conexión a Firebase (datos de ejemplo en memoria):
+
+```
+.\gradlew.bat :desktopApp:run -Pcambiate.fake=true
+```
+
+### Claves
+
+Se leen de `local.properties` (que no se sube al repositorio) o de variables de entorno con el mismo nombre:
+
+| Clave | Para qué sirve |
+|---|---|
+| `FIREBASE_API_KEY` | La *Web API key* del proyecto de Firebase (Configuración del proyecto, pestaña General) |
+| `FIREBASE_PROJECT_ID` | El id del proyecto de Firebase (`cambiateapp`) |
+| `ANTHROPIC_API_KEY` | Módulo de IA, cuando esté disponible |
+
+Si faltan `FIREBASE_API_KEY` o `FIREBASE_PROJECT_ID`, la app abre igual y avisa por consola; el login va a mostrar un error. Escritorio usa el **mismo proyecto de Firebase** que Android: las prendas y los usuarios son los mismos.
+
+### Diferencias con Android
+
+- **Sin cámara:** las fotos se eligen de un archivo (JPG, PNG, WEBP, etc.).
+- **Ubicación aproximada:** no hay GPS. Se calcula por la dirección IP con el servicio ipwho.is (esto le envía tu IP a ese servicio). Si falla, se usa la última ubicación guardada y, si no hay, el Obelisco de Buenos Aires. La pantalla avisa cuando la ubicación es aproximada.
+- **Mapa propio:** en lugar de osmdroid, el mapa se dibuja con Compose y descarga las imágenes de OpenTopoMap (datos de OpenStreetMap), con arrastre y zoom. Muestra la atribución correspondiente.
+- **Recordatorios solo con la app abierta:** no hay un servicio del sistema que despierte la app como en Android. El aviso diario sale por la bandeja del sistema (o dentro de la app si no hay bandeja) únicamente mientras la ventana esté abierta.
+- **Actualización de la lista:** Firestore REST no tiene escucha en tiempo real; la lista se consulta cada 5 segundos mientras la pantalla está abierta, y enseguida después de guardar.
+- **Preferencias y sesión:** se guardan con `java.util.prefs` (en Windows, en el registro del usuario actual). Se guardan los tokens, nunca la contraseña.
+
+### Por qué REST y no GitLive
+
+Android usa el SDK nativo de Firebase a través de GitLive, que no funciona en JVM de escritorio. Por eso, en escritorio, la autenticación y Firestore se implementan con la API REST de Firebase usando Ktor: `identitytoolkit.googleapis.com` para el login y el registro, `securetoken.googleapis.com` para renovar el token, y `firestore.googleapis.com` para las prendas. Los pedidos llevan el token del usuario, así que se aplican las mismas reglas de seguridad ([`firestore.rules`](firestore.rules)). Cada plataforma registra su implementación con un módulo de Koin propio; el código de Android no cambia.
+
+### Tests de escritorio
+
+```
+.\gradlew.bat :shared:jvmTest
+```
+
+Usan `MockEngine` de Ktor y relojes virtuales: no necesitan internet ni claves.
+
 ## Seguridad
 
 Las reglas de Firestore están en [`firestore.rules`](firestore.rules): cada usuario solo puede leer y modificar los documentos cuyo `userId` coincide con el suyo, y todo lo demás está cerrado. No se publica ningún secreto en el repositorio: `google-services.json` y `local.properties` están en `.gitignore`.
