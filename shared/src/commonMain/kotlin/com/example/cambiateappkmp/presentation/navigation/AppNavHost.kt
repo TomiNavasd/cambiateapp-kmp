@@ -42,6 +42,8 @@ fun AppNavHost(
                 onPrendaClick = { id -> navegacion.ir(Ruta.DetallePrenda(id)) },
                 onNuevaClick = { navegacion.ir(Ruta.AltaEdicion(null)) },
                 onCerrarSesion = sessionViewModel::cerrarSesion,
+                onMapaClick = { navegacion.ir(RutaMapa) },
+                onAjustesClick = { navegacion.ir(RutaAjustes) },
             )
 
             is Ruta.DetallePrenda -> DetallePrendaRoute(
@@ -56,7 +58,7 @@ fun AppNavHost(
                 onGuardada = { navegacion.volver() },
             )
 
-            else -> PantallaCarga()
+            else -> PantallasSemana3(ruta, navegacion)
         }
 
         SessionUiState.SinSesion -> when (navegacion.actual) {
