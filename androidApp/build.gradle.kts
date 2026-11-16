@@ -1,3 +1,5 @@
+import java.io.StringReader
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -5,6 +7,19 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.googleServices)
 }
+
+// Las claves salen de local.properties (no se sube al repositorio) o de variables de entorno.
+// Si faltan, quedan vacías y el build no falla.
+val localProperties = Properties().apply {
+    val texto = providers.fileContents(rootProject.layout.projectDirectory.file("local.properties")).asText
+    if (texto.isPresent) StringReader(texto.get()).use { load(it) }
+}
+
+fun leerClave(nombre: String): String =
+    (localProperties.getProperty(nombre) ?: providers.environmentVariable(nombre).orNull ?: "")
+        .trim()
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"")
 
 kotlin {
     compilerOptions {
@@ -31,6 +46,8 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "ANTHROPIC_API_KEY", "\"${leerClave("ANTHROPIC_API_KEY")}\"")
     }
     packaging {
         resources {
@@ -52,5 +69,6 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }

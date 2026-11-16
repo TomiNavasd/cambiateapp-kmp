@@ -1,0 +1,7 @@
+# Copiá este archivo como local.properties (ese archivo NO se sube al repositorio) y completá los valores.
+# Android Studio agrega solo la línea sdk.dir: no la borres.
+# Sin claves el proyecto compila igual; solo fallan las funciones que las necesitan.
+
+ANTHROPIC_API_KEY=
+
+# MAPS_API_KEY=   (no se usa por ahora: el mapa es OpenStreetMap y no necesita clave)

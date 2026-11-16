@@ -1,0 +1,29 @@
+package com.example.cambiateappkmp.presentation.mapa
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import com.example.cambiateappkmp.domain.model.LocalRopa
+import com.example.cambiateappkmp.domain.model.Ubicacion
+
+@Composable
+actual fun MapaView(
+    ubicacion: Ubicacion?,
+    locales: List<LocalRopa>,
+    modifier: Modifier,
+) {
+    Box(
+        modifier = modifier.background(MaterialTheme.colorScheme.surfaceVariant),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = "Mapa no disponible en escritorio",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}

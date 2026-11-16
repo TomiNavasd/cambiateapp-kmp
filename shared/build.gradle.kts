@@ -36,6 +36,9 @@ kotlin {
             implementation(libs.compose.uiTooling)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.osmdroid.android)
+            implementation(libs.play.services.location)
+            implementation(libs.androidx.work.runtime.ktx)
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
