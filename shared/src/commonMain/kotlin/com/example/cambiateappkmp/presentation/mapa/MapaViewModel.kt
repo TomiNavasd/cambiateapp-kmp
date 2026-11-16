@@ -7,6 +7,7 @@ import com.example.cambiateappkmp.domain.error.UbicacionException
 import com.example.cambiateappkmp.domain.model.Ubicacion
 import com.example.cambiateappkmp.domain.repository.ClimaRepository
 import com.example.cambiateappkmp.domain.repository.LocalesRepository
+import com.example.cambiateappkmp.domain.repository.PreferenciasRepository
 import com.example.cambiateappkmp.domain.repository.UbicacionProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 private const val RADIO_LOCALES_METROS = 1500
 
@@ -23,6 +25,7 @@ class MapaViewModel(
     private val ubicacionProvider: UbicacionProvider,
     private val climaRepository: ClimaRepository,
     private val localesRepository: LocalesRepository,
+    private val preferencias: PreferenciasRepository,
 ) : ViewModel() {
 
     private val _estado = MutableStateFlow<MapaUiState>(MapaUiState.SinPermiso())
@@ -58,10 +61,23 @@ class MapaViewModel(
                 return@launch
             }
 
+            guardarUltimaUbicacion(ubicacion)
+
             // Primero se muestra el mapa; el clima y los locales llegan después, en paralelo.
             _estado.value = MapaUiState.Contenido(ubicacion = ubicacion)
             launch { cargarClima(ubicacion) }
             launch { cargarLocales(ubicacion) }
+        }
+    }
+
+    /** Queda guardada para que el recordatorio en segundo plano sepa de dónde pedir el clima. */
+    private suspend fun guardarUltimaUbicacion(ubicacion: Ubicacion) {
+        try {
+            preferencias.guardarUltimaUbicacion(ubicacion)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // No es crítico: el mapa se muestra igual.
         }
     }
 
