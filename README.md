@@ -144,3 +144,18 @@ Publicar las reglas **también afecta a la app nativa**, porque comparte la mism
 
 Incluye los tests del repositorio de Cloudinary (con el `MockEngine` de Ktor, sin internet) y del almacenamiento falso.
 
+## Claves de API
+
+Algunas funciones necesitan claves que **no se suben al repositorio**. Se guardan en `local.properties`, en la raíz del proyecto, un archivo que está en `.gitignore`.
+
+1. Copiar `local.properties.example` como `local.properties`. Si Android Studio ya creó uno, agregar las líneas al final sin borrar `sdk.dir`.
+2. Completar los valores.
+
+| Clave | Para qué sirve | Cómo conseguirla |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | Sugerencias de outfits y etiquetas automáticas de las prendas (módulo de IA de la app) | Se crea en la consola de Anthropic (https://console.anthropic.com), sección *API Keys* |
+| `MAPS_API_KEY` | No se usa por ahora: el mapa es OpenStreetMap (osmdroid) y no necesita clave | No hace falta |
+
+- Si falta una clave, el proyecto compila igual: la clave queda vacía y solo fallan las funciones que dependen de ella. También se puede pasar como variable de entorno con el mismo nombre.
+- Las claves llegan a la app por `BuildConfig` (ver `androidApp/build.gradle.kts`) y el código las lee con la interfaz `ApiKeys`, que se inyecta con Koin. Nunca hay que escribir una clave en el código.
+
