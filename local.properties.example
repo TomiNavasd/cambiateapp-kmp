@@ -5,3 +5,8 @@
 ANTHROPIC_API_KEY=
 
 # MAPS_API_KEY=   (no se usa por ahora: el mapa es OpenStreetMap y no necesita clave)
+
+# Solo para la versión de escritorio: hablan con Firebase por su API REST, en el mismo proyecto que usa Android.
+# FIREBASE_API_KEY es la "Clave de API web" (Firebase > Configuración del proyecto > General).
+FIREBASE_API_KEY=
+FIREBASE_PROJECT_ID=
