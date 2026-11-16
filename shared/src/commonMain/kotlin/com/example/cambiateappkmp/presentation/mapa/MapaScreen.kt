@@ -1,5 +1,6 @@
 package com.example.cambiateappkmp.presentation.mapa
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,12 +20,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,7 +65,10 @@ fun MapaRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Contenido de la pantalla Mapa, sin barra superior propia: el título y el botón "Volver"
+ * los pone quien la muestra (la navegación), así se puede usar tanto con una barra como con pestañas.
+ */
 @Composable
 fun MapaScreen(
     state: MapaUiState,
@@ -77,33 +78,25 @@ fun MapaScreen(
     onSugerir: (ClimaActual?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            TopAppBar(title = { Text("Mapa", style = MaterialTheme.typography.headlineSmall) })
-        },
-    ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            when (state) {
-                is MapaUiState.SinPermiso -> EstadoVacio(
-                    titulo = "Necesitamos tu ubicación",
-                    mensaje = if (state.rechazado) {
-                        "Sin el permiso no podemos mostrarte en el mapa. Podés activarlo desde los ajustes del sistema."
-                    } else {
-                        "Para mostrarte en el mapa y buscar tiendas cerca necesitamos permiso de ubicación."
-                    },
-                    textoBoton = "Dar permiso",
-                    onClick = onPedirPermiso,
-                )
-                MapaUiState.Cargando -> EstadoCargando()
-                is MapaUiState.Error -> EstadoError(mensaje = state.mensaje, onReintentar = onReintentar)
-                is MapaUiState.Contenido -> ContenidoMapa(
-                    state = state,
-                    onReintentarLocales = onReintentarLocales,
-                    onSugerir = onSugerir,
-                )
-            }
+    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        when (state) {
+            is MapaUiState.SinPermiso -> EstadoVacio(
+                titulo = "Necesitamos tu ubicación",
+                mensaje = if (state.rechazado) {
+                    "Sin el permiso no podemos mostrarte en el mapa. Podés activarlo desde los ajustes del sistema."
+                } else {
+                    "Para mostrarte en el mapa y buscar tiendas cerca necesitamos permiso de ubicación."
+                },
+                textoBoton = "Dar permiso",
+                onClick = onPedirPermiso,
+            )
+            MapaUiState.Cargando -> EstadoCargando()
+            is MapaUiState.Error -> EstadoError(mensaje = state.mensaje, onReintentar = onReintentar)
+            is MapaUiState.Contenido -> ContenidoMapa(
+                state = state,
+                onReintentarLocales = onReintentarLocales,
+                onSugerir = onSugerir,
+            )
         }
     }
 }

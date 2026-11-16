@@ -1,7 +1,7 @@
 package com.example.cambiateappkmp.presentation.notificaciones
 
 /**
- * true si los recordatorios solo salen mientras la app está abierta (escritorio).
- * En Android los programa el sistema y salen aunque la app esté cerrada.
+ * true si la plataforma tiene recordatorios del clima (Android). En escritorio no hay:
+ * ahí no se muestra el acceso a Notificaciones ni se programa ningún recordatorio.
  */
-expect val recordatoriosSoloConLaAppAbierta: Boolean
+expect val notificacionesDisponibles: Boolean

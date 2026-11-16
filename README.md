@@ -116,10 +116,11 @@ Si faltan `FIREBASE_API_KEY` o `FIREBASE_PROJECT_ID`, la app abre igual y avisa 
 
 - **Sin cámara:** las fotos se eligen de un archivo (JPG, PNG, WEBP, etc.).
 - **Ubicación aproximada:** no hay GPS. Se calcula por la dirección IP con el servicio ipwho.is (esto le envía tu IP a ese servicio). Si falla, se usa la última ubicación guardada y, si no hay, el Obelisco de Buenos Aires. La pantalla avisa cuando la ubicación es aproximada.
+- **Mapa y Ajustes:** se llega desde el armario. Ajustes permite elegir el tema (Sistema, Claro u Oscuro); con Sistema sigue el modo de Windows.
 - **Mapa propio:** en lugar de osmdroid, el mapa se dibuja con Compose y descarga las imágenes de OpenTopoMap (datos de OpenStreetMap), con arrastre y zoom. Muestra la atribución correspondiente.
-- **Recordatorios solo con la app abierta:** no hay un servicio del sistema que despierte la app como en Android. El aviso diario sale por la bandeja del sistema (o dentro de la app si no hay bandeja) únicamente mientras la ventana esté abierta.
+- **Sin notificaciones:** los recordatorios del clima son solo de Android. En escritorio no se muestra la fila de Notificaciones en Ajustes y no se programa ningún recordatorio.
 - **Actualización de la lista:** Firestore REST no tiene escucha en tiempo real; la lista se consulta cada 5 segundos mientras la pantalla está abierta, y enseguida después de guardar.
-- **Preferencias y sesión:** se guardan con `java.util.prefs` (en Windows, en el registro del usuario actual). Se guardan los tokens, nunca la contraseña.
+- **Preferencias y sesión:** el tema y la última ubicación se guardan con `java.util.prefs` (en Windows, en el registro del usuario actual). Se guardan los tokens, nunca la contraseña.
 
 ### Por qué REST y no GitLive
 

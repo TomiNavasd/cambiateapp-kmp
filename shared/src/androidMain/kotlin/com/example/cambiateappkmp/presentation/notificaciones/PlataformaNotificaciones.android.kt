@@ -1,3 +1,3 @@
 package com.example.cambiateappkmp.presentation.notificaciones
 
-actual val recordatoriosSoloConLaAppAbierta: Boolean = false
+actual val notificacionesDisponibles: Boolean = true
