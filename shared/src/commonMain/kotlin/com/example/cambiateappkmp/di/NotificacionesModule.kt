@@ -1,7 +1,16 @@
 package com.example.cambiateappkmp.di
 
+import com.example.cambiateappkmp.presentation.notificaciones.NotificacionesViewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val notificacionesModule = module { }
+// Los dos modulos usan el notificador de cada plataforma: la notificación de prueba se ve también en modo fake.
+val notificacionesModule = module {
+    includes(notificadorPlataformaModule)
+    viewModelOf(::NotificacionesViewModel)
+}
 
-val notificacionesFakeModule = module { }
+val notificacionesFakeModule = module {
+    includes(notificadorPlataformaModule)
+    viewModelOf(::NotificacionesViewModel)
+}
