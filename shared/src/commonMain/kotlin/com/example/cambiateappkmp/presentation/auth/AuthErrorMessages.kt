@@ -19,7 +19,7 @@ fun Throwable.aErrorDeFormulario(): ErrorDeFormulario = when (this) {
     is DomainException.Validacion -> when (this.campo) {
         CampoInvalido.EMAIL -> ErrorDeFormulario(email = "Completá el email")
         CampoInvalido.CONTRASENA -> ErrorDeFormulario(contrasena = "Ingresá tu contraseña")
-        CampoInvalido.NOMBRE, CampoInvalido.FOTO ->
+        CampoInvalido.NOMBRE, CampoInvalido.FOTO, CampoInvalido.PRENDAS ->
             ErrorDeFormulario(general = "Revisá los datos ingresados")
     }
 
