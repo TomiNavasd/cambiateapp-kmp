@@ -243,7 +243,7 @@ class PrendaRepositoryRestTest {
         assertEquals("/v1/projects/proyecto/databases/(default)/documents/prendas", pedido.url.encodedPath)
         val campos = pedido.cuerpo()["fields"]!!.jsonObject
         assertEquals(
-            setOf("userId", "nombre", "descripcion", "categoria", "colores", "ocasiones", "fotoUrl"),
+            setOf("userId", "nombre", "descripcion", "categoria", "colores", "ocasiones", "fotoUrl", "etiquetas"),
             campos.keys,
         )
         assertEquals("uid1", campos["userId"]!!.jsonObject["stringValue"]!!.jsonPrimitive.content)

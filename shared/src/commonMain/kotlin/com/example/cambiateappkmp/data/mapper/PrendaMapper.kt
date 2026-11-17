@@ -15,6 +15,7 @@ internal fun PrendaDto.aDomain(id: String): Prenda? {
         colores = colores,
         ocasiones = ocasiones.mapNotNull { it.aOcasionOrNull() },
         fotoUrl = fotoUrl,
+        etiquetas = etiquetas,
     )
 }
 
@@ -26,6 +27,7 @@ internal fun Prenda.aDto(userId: String): PrendaDto = PrendaDto(
     colores = colores,
     ocasiones = ocasiones.map { it.name.lowercase() },
     fotoUrl = fotoUrl,
+    etiquetas = etiquetas,
 )
 
 private fun String.aCategoriaOrNull(): Categoria? =

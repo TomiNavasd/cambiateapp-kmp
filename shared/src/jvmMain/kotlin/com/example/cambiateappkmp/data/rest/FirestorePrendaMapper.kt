@@ -17,6 +17,7 @@ internal fun PrendaDto.aCamposFirestore(): Map<String, ValorFirestore> = mapOf(
     "colores" to ValorFirestore.Lista(colores.map(ValorFirestore::Texto)),
     "ocasiones" to ValorFirestore.Lista(ocasiones.map(ValorFirestore::Texto)),
     "fotoUrl" to ValorFirestore.Texto(fotoUrl),
+    "etiquetas" to ValorFirestore.Lista(etiquetas.map(ValorFirestore::Texto)),
 )
 
 /** Lo mismo que [aCamposFirestore] pero solo con los campos editables (para el PATCH con updateMask). */
@@ -32,4 +33,5 @@ internal fun DocumentoFirestore.aPrendaDto(): PrendaDto = PrendaDto(
     colores = listaDeTextos("colores"),
     ocasiones = listaDeTextos("ocasiones"),
     fotoUrl = texto("fotoUrl").orEmpty(),
+    etiquetas = listaDeTextos("etiquetas"),
 )
