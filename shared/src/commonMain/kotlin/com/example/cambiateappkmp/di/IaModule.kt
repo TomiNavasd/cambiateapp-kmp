@@ -1,7 +1,34 @@
 package com.example.cambiateappkmp.di
 
+import com.example.cambiateappkmp.data.ai.ClaudeOutfitSuggester
+import com.example.cambiateappkmp.data.ai.ReglasOutfitSuggester
+import com.example.cambiateappkmp.data.ai.SugeridorConRespaldo
+import com.example.cambiateappkmp.data.ai.crearClienteClaude
+import com.example.cambiateappkmp.data.fake.FakeOutfitSuggester
+import com.example.cambiateappkmp.domain.repository.OutfitSuggester
+import com.example.cambiateappkmp.domain.usecase.SuggestOutfitsUseCase
+import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val iaModule = module { }
+// Versión real: Claude, con las reglas simples de respaldo. La clave sale solo de ApiKeys.anthropic (la aporta cada app).
+val iaModule = module {
+    single(named("claude")) { crearClienteClaude() }
+    single<OutfitSuggester> {
+        SugeridorConRespaldo(
+            principal = ClaudeOutfitSuggester(apiKeys = get(), cliente = get(named("claude"))),
+            respaldo = ReglasOutfitSuggester(),
+        )
+    }
+    casosDeUsoDeIa()
+}
 
-val iaFakeModule = module { }
+// Versión para pruebas: sin red y sin clave.
+val iaFakeModule = module {
+    single<OutfitSuggester> { FakeOutfitSuggester() }
+    casosDeUsoDeIa()
+}
+
+private fun Module.casosDeUsoDeIa() {
+    factory { SuggestOutfitsUseCase(get(), get()) }
+}
