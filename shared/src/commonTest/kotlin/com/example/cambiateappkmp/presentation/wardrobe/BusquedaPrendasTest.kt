@@ -39,6 +39,26 @@ class BusquedaPrendasTest {
     }
 
     @Test
+    fun buscaPorEtiquetasQueElUsuarioNoVe() {
+        val conEtiquetas = jean.copy(etiquetas = listOf("versatil", "cinturaalta", "otono"))
+
+        assertTrue(conEtiquetas.coincideConBusqueda("versátil"))
+        assertTrue(conEtiquetas.coincideConBusqueda("OTOÑO"))
+        assertTrue(conEtiquetas.coincideConBusqueda("cinturaalta"))
+        assertFalse(jean.coincideConBusqueda("versatil"))
+    }
+
+    @Test
+    fun laBusquedaPorEtiquetaSeCombinaConElFiltroDeCategoria() {
+        val remera = camisa.copy(etiquetas = listOf("verano"))
+        val short = jean.copy(etiquetas = listOf("verano"))
+        val todas = listOf(remera, short, zapatillas)
+
+        assertEquals(listOf(remera, short), todas.filtrarArmario(null, "verano"))
+        assertEquals(listOf(short), todas.filtrarArmario(Categoria.INFERIOR, "verano"))
+    }
+
+    @Test
     fun laConsultaVaciaOEnBlancoDejaPasarTodo() {
         assertTrue(jean.coincideConBusqueda(""))
         assertTrue(jean.coincideConBusqueda("   "))

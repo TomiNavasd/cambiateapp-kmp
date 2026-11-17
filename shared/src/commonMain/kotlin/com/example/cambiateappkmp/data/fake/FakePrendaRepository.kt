@@ -42,6 +42,7 @@ private fun prenda(
     categoria: Categoria,
     colores: List<String>,
     ocasiones: List<Ocasion>,
+    etiquetas: List<String> = emptyList(),
 ) = Prenda(
     id = id,
     nombre = nombre,
@@ -50,17 +51,18 @@ private fun prenda(
     colores = colores,
     ocasiones = ocasiones,
     fotoUrl = "https://picsum.photos/seed/prenda$id/400/500",
+    etiquetas = etiquetas,
 )
 
 private fun prendasIniciales(): List<Prenda> = listOf(
-    prenda("1", "Remera blanca básica", "Algodón, cuello redondo", Categoria.SUPERIOR, listOf("blanco"), listOf(Ocasion.CASUAL, Ocasion.DEPORTE)),
-    prenda("2", "Camisa celeste", "Manga larga, corte clásico", Categoria.SUPERIOR, listOf("celeste"), listOf(Ocasion.TRABAJO, Ocasion.FACULTAD)),
-    prenda("3", "Remera negra estampada", "Estampa roja en el frente", Categoria.SUPERIOR, listOf("negro", "rojo"), listOf(Ocasion.SALIDA, Ocasion.CASUAL)),
-    prenda("4", "Jean azul", "Corte recto", Categoria.INFERIOR, listOf("azul"), listOf(Ocasion.CASUAL)),
-    prenda("5", "Pantalón de vestir negro", "Tela liviana", Categoria.INFERIOR, listOf("negro"), listOf(Ocasion.TRABAJO, Ocasion.CASAMIENTO)),
-    prenda("6", "Zapatillas blancas", "Para todos los días", Categoria.CALZADO, listOf("blanco"), listOf(Ocasion.CASUAL, Ocasion.DEPORTE)),
-    prenda("7", "Zapatos de cuero marrón", "Con cordones", Categoria.CALZADO, listOf("marrón"), listOf(Ocasion.TRABAJO, Ocasion.CASAMIENTO)),
-    prenda("8", "Campera de jean", "Con botones metálicos", Categoria.ABRIGO, listOf("azul"), listOf(Ocasion.CASUAL)),
-    prenda("9", "Sobretodo gris", "Largo hasta la rodilla", Categoria.ABRIGO, listOf("gris"), listOf(Ocasion.CASAMIENTO, Ocasion.TRABAJO)),
-    prenda("10", "Reloj plateado", "Malla metálica", Categoria.ACCESORIO, listOf("plateado"), listOf(Ocasion.CASAMIENTO, Ocasion.SALIDA)),
+    prenda("1", "Remera blanca básica", "Algodón, cuello redondo", Categoria.SUPERIOR, listOf("blanco"), listOf(Ocasion.CASUAL, Ocasion.DEPORTE), listOf("casual", "basico", "algodon", "verano")),
+    prenda("2", "Camisa celeste", "Manga larga, corte clásico", Categoria.SUPERIOR, listOf("celeste"), listOf(Ocasion.TRABAJO, Ocasion.FACULTAD), listOf("formal", "oficina", "clasico", "entretiempo")),
+    prenda("3", "Remera negra estampada", "Estampa roja en el frente", Categoria.SUPERIOR, listOf("negro", "rojo"), listOf(Ocasion.SALIDA, Ocasion.CASUAL), listOf("casual", "estampado", "salida", "verano")),
+    prenda("4", "Jean azul", "Corte recto", Categoria.INFERIOR, listOf("azul"), listOf(Ocasion.CASUAL), listOf("casual", "jean", "recto", "versatil")),
+    prenda("5", "Pantalón de vestir negro", "Tela liviana", Categoria.INFERIOR, listOf("negro"), listOf(Ocasion.TRABAJO, Ocasion.CASAMIENTO), listOf("formal", "elegante", "trabajo", "liviano")),
+    prenda("6", "Zapatillas blancas", "Para todos los días", Categoria.CALZADO, listOf("blanco"), listOf(Ocasion.CASUAL, Ocasion.DEPORTE), listOf("deportivo", "diario", "comodo", "versatil")),
+    prenda("7", "Zapatos de cuero marrón", "Con cordones", Categoria.CALZADO, listOf("marrón"), listOf(Ocasion.TRABAJO, Ocasion.CASAMIENTO), listOf("formal", "cuero", "boda", "clasico")),
+    prenda("8", "Campera de jean", "Con botones metálicos", Categoria.ABRIGO, listOf("azul"), listOf(Ocasion.CASUAL), listOf("casual", "jean", "entretiempo", "urbano")),
+    prenda("9", "Sobretodo gris", "Largo hasta la rodilla", Categoria.ABRIGO, listOf("gris"), listOf(Ocasion.CASAMIENTO, Ocasion.TRABAJO), listOf("abrigado", "invierno", "elegante", "lana")),
+    prenda("10", "Reloj plateado", "Malla metálica", Categoria.ACCESORIO, listOf("plateado"), listOf(Ocasion.CASAMIENTO, Ocasion.SALIDA), listOf("elegante", "fiesta", "brillante", "atemporal")),
 )
