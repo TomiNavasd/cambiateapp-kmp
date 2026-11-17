@@ -1,9 +1,14 @@
 package com.example.cambiateappkmp.presentation.altaedicion
 
+import com.example.cambiateappkmp.domain.error.DomainException
+import com.example.cambiateappkmp.domain.model.AnalisisPrenda
 import com.example.cambiateappkmp.domain.model.Categoria
 import com.example.cambiateappkmp.domain.model.Ocasion
 import com.example.cambiateappkmp.domain.model.Prenda
+import com.example.cambiateappkmp.domain.repository.AnalizadorDePrenda
 import com.example.cambiateappkmp.domain.repository.PrendaRepository
+import com.example.cambiateappkmp.domain.usecase.AnalizarPrendaUseCase
+import com.example.cambiateappkmp.domain.usecase.EtiquetarPrendaUseCase
 import com.example.cambiateappkmp.domain.usecase.ObtenerPrendaUseCase
 import com.example.cambiateappkmp.domain.usecase.SavePrendaUseCase
 import kotlin.test.AfterTest
@@ -18,6 +23,12 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+
+/** Sin clave ni red: el análisis siempre falla, así que no se consiguen etiquetas nuevas. */
+private object AnalizadorQueFalla : AnalizadorDePrenda {
+    override suspend fun analizar(fotoUrl: String, idioma: String): Result<AnalisisPrenda> =
+        Result.failure(DomainException.SinConexion)
+}
 
 private class RepositorioQueGuarda(private val existente: Prenda?) : PrendaRepository {
     val guardadas = mutableListOf<Prenda>()
@@ -49,8 +60,12 @@ class AltaEdicionEtiquetasTest {
         etiquetas = listOf("casual", "liviano", "verano"),
     )
 
-    private fun viewModel(repo: RepositorioQueGuarda) =
-        AltaEdicionViewModel(ObtenerPrendaUseCase(repo), SavePrendaUseCase(repo))
+    private fun viewModel(repo: RepositorioQueGuarda) = AltaEdicionViewModel(
+        ObtenerPrendaUseCase(repo),
+        SavePrendaUseCase(repo),
+        AnalizarPrendaUseCase(AnalizadorQueFalla),
+        EtiquetarPrendaUseCase(AnalizarPrendaUseCase(AnalizadorQueFalla)),
+    )
 
     @Test
     fun alEditarSeVuelvenAGuardarLasEtiquetasQueTraiaLaPrenda() = runTest {
@@ -67,7 +82,7 @@ class AltaEdicionEtiquetasTest {
     }
 
     @Test
-    fun unaPrendaNuevaSeGuardaSinEtiquetas() = runTest {
+    fun siNoSePuedenConseguirEtiquetasLaPrendaNuevaSeGuardaSinEllas() = runTest {
         val repo = RepositorioQueGuarda(null)
         val vm = viewModel(repo)
         vm.iniciar(null)

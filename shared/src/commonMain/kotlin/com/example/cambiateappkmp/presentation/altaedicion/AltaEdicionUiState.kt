@@ -18,6 +18,12 @@ data class AltaEdicionUiState(
     /** Etiquetas de la prenda: no se muestran ni se editan, se conservan para guardarlas sin cambios. */
     val etiquetas: List<String> = emptyList(),
 
+    /** La IA está analizando la foto (botón "Escanear prenda"). */
+    val analizando: Boolean = false,
+    /** Resultado del escaneo para mostrar bajo el botón: lo que se completó o por qué falló. */
+    val avisoEscaneo: String? = null,
+    val avisoEscaneoEsError: Boolean = false,
+
     val guardando: Boolean = false,
     val errorNombre: String? = null,
     val errorFoto: String? = null,

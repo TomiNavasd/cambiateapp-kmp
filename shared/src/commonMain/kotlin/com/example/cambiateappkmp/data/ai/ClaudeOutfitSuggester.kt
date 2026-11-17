@@ -23,13 +23,8 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.time.Clock
 import kotlin.time.Instant
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.put
 
 internal const val URL_API_CLAUDE = "https://api.anthropic.com/v1/messages"
@@ -126,8 +121,8 @@ class ClaudeOutfitSuggester(
             throw DomainException.SinConexion
         }
 
-        if (!respuesta.status.isSuccess()) throw errorHttp(respuesta.status.value)
-        return extraerTexto(respuesta.bodyAsText())
+        if (!respuesta.status.isSuccess()) throw errorHttpDeClaude(respuesta.status.value)
+        return extraerTextoDeClaude(respuesta.bodyAsText())
     }
 
     /** Una línea por prenda: alias|nombre|categoria|colores|etiquetas. Es internal para poder probarlo. */
@@ -152,23 +147,6 @@ class ClaudeOutfitSuggester(
 
     private fun limpiar(texto: String): String =
         texto.replace('\n', ' ').replace('\r', ' ').replace('|', ' ').take(40)
-
-    private fun extraerTexto(respuesta: String): String {
-        val contenido = (Json.parseToJsonElement(respuesta) as? JsonObject)?.get("content") as? JsonArray
-            ?: return ""
-        for (bloque in contenido) {
-            val objeto = bloque as? JsonObject ?: continue
-            if ((objeto["type"] as? JsonPrimitive)?.contentOrNull == "text") {
-                return (objeto["text"] as? JsonPrimitive)?.contentOrNull.orEmpty()
-            }
-        }
-        return ""
-    }
-
-    private fun errorHttp(codigo: Int): DomainException = when (codigo) {
-        401, 403 -> DomainException.SinPermisos
-        else -> DomainException.Desconocido(IllegalStateException("Claude respondió HTTP $codigo"))
-    }
 
     internal companion object {
         const val MAX_TOKENS = 1000
