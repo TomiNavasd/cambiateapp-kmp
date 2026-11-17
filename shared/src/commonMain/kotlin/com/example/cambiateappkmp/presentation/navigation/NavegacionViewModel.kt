@@ -24,4 +24,17 @@ class NavegacionViewModel : ViewModel() {
         pila.clear()
         pila.add(inicio)
     }
+
+    /**
+     * Cambia de pestaña sin apilar pantallas: la pila queda en [Armario] o en [Armario, pestaña], como en la nativa
+     * (popUpTo del Armario). Si ya estamos en esa pestaña no hace nada. Los ViewModel de cada pestaña siguen vivos,
+     * así que conservan su estado (filtros, búsqueda, sugerencias).
+     */
+    fun irAPestana(pestana: Ruta) {
+        require(pestana.esPestana) { "$pestana no es una pestaña" }
+        if (actual.mismaPestanaQue(pestana)) return
+        pila.clear()
+        pila.add(Ruta.Armario)
+        if (pestana !is Ruta.Armario) pila.add(pestana)
+    }
 }

@@ -10,5 +10,6 @@ sealed interface WardrobeUiState {
     data class Contenido(
         val prendas: List<Prenda>,
         val filtro: Categoria?,
+        val consulta: String = "",
     ) : WardrobeUiState
 }

@@ -54,11 +54,8 @@ class WardrobeViewModel(
         texto: String,
     ): WardrobeUiState {
         if (prendas.isEmpty()) return WardrobeUiState.Vacio
-        val consulta = texto.trim()
-        val visibles = prendas
-            .filter { categoria == null || it.categoria == categoria }
-            .filter { consulta.isEmpty() || it.nombre.contains(consulta, ignoreCase = true) }
-        return WardrobeUiState.Contenido(prendas = visibles, filtro = categoria)
+        val visibles = prendas.filtrarArmario(categoria, texto)
+        return WardrobeUiState.Contenido(prendas = visibles, filtro = categoria, consulta = texto)
     }
 
     private fun mensajeDe(error: Throwable): String = when (error) {
