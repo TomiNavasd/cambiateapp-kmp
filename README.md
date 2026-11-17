@@ -110,7 +110,7 @@ Se leen de `local.properties` (que no se sube al repositorio) o de variables de 
 | `FIREBASE_PROJECT_ID` | El id del proyecto de Firebase (`cambiateapp`) |
 | `ANTHROPIC_API_KEY` | Módulo de IA, cuando esté disponible |
 
-Si faltan `FIREBASE_API_KEY` o `FIREBASE_PROJECT_ID`, la app abre igual y avisa por consola; el login va a mostrar un error. Escritorio usa el **mismo proyecto de Firebase** que Android: las prendas y los usuarios son los mismos.
+Si faltan `FIREBASE_API_KEY` o `FIREBASE_PROJECT_ID`, la app abre igual y avisa por consola; el login va a mostrar un error. Escritorio usa el **mismo proyecto de Firebase** que Android: las prendas, los outfits y los usuarios son los mismos.
 
 ### Diferencias con Android
 
@@ -119,12 +119,12 @@ Si faltan `FIREBASE_API_KEY` o `FIREBASE_PROJECT_ID`, la app abre igual y avisa 
 - **Mapa y Ajustes:** se llega desde el armario. Ajustes permite elegir el tema (Sistema, Claro u Oscuro); con Sistema sigue el modo de Windows.
 - **Mapa propio:** en lugar de osmdroid, el mapa se dibuja con Compose y descarga las imágenes de OpenTopoMap (datos de OpenStreetMap), con arrastre y zoom. Muestra la atribución correspondiente.
 - **Sin notificaciones:** los recordatorios del clima son solo de Android. En escritorio no se muestra la fila de Notificaciones en Ajustes y no se programa ningún recordatorio.
-- **Actualización de la lista:** Firestore REST no tiene escucha en tiempo real; la lista se consulta cada 5 segundos mientras la pantalla está abierta, y enseguida después de guardar.
+- **Actualización de la lista:** Firestore REST no tiene escucha en tiempo real; la lista de prendas y la de outfits se consultan cada 5 segundos mientras la pantalla está abierta, y enseguida después de guardar.
 - **Preferencias y sesión:** el tema y la última ubicación se guardan con `java.util.prefs` (en Windows, en el registro del usuario actual). Se guardan los tokens, nunca la contraseña.
 
 ### Por qué REST y no GitLive
 
-Android usa el SDK nativo de Firebase a través de GitLive, que no funciona en JVM de escritorio. Por eso, en escritorio, la autenticación y Firestore se implementan con la API REST de Firebase usando Ktor: `identitytoolkit.googleapis.com` para el login y el registro, `securetoken.googleapis.com` para renovar el token, y `firestore.googleapis.com` para las prendas. Los pedidos llevan el token del usuario, así que se aplican las mismas reglas de seguridad ([`firestore.rules`](firestore.rules)). Cada plataforma registra su implementación con un módulo de Koin propio; el código de Android no cambia.
+Android usa el SDK nativo de Firebase a través de GitLive, que no funciona en JVM de escritorio. Por eso, en escritorio, la autenticación y Firestore se implementan con la API REST de Firebase usando Ktor: `identitytoolkit.googleapis.com` para el login y el registro, `securetoken.googleapis.com` para renovar el token, y `firestore.googleapis.com` para las prendas y los outfits. Los pedidos llevan el token del usuario, así que se aplican las mismas reglas de seguridad ([`firestore.rules`](firestore.rules)). Cada plataforma registra su implementación con un módulo de Koin propio; el código de Android no cambia.
 
 ### Tests de escritorio
 
