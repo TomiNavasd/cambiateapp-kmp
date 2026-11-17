@@ -9,6 +9,8 @@ import com.example.cambiateappkmp.domain.model.Outfit
 import com.example.cambiateappkmp.domain.model.Prenda
 import com.example.cambiateappkmp.domain.repository.OutfitSuggester
 import com.example.cambiateappkmp.domain.repository.OutfitsRepository
+import com.example.cambiateappkmp.domain.usecase.AlternarFavoritoUseCase
+import com.example.cambiateappkmp.domain.usecase.DeleteOutfitUseCase
 import com.example.cambiateappkmp.domain.usecase.ObserveOutfitsUseCase
 import com.example.cambiateappkmp.domain.usecase.ObservePrendasUseCase
 import com.example.cambiateappkmp.domain.usecase.SaveOutfitUseCase
@@ -51,6 +53,14 @@ private class OutfitsConFallos(
 ) : OutfitsRepository by base {
     override suspend fun guardarOutfit(outfit: Outfit): Result<Unit> =
         error?.let { Result.failure(it) } ?: base.guardarOutfit(outfit)
+
+    var errorEscrituraDeOtros: Throwable? = null
+
+    override suspend fun eliminarOutfit(id: String): Result<Unit> =
+        errorEscrituraDeOtros?.let { Result.failure(it) } ?: base.eliminarOutfit(id)
+
+    override suspend fun cambiarFavorito(id: String, favorito: Boolean): Result<Unit> =
+        errorEscrituraDeOtros?.let { Result.failure(it) } ?: base.cambiarFavorito(id, favorito)
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -87,6 +97,8 @@ class OutfitsViewModelTest {
             observeOutfits = ObserveOutfitsUseCase(conFallos),
             observePrendas = observePrendas,
             saveOutfit = SaveOutfitUseCase(conFallos),
+            deleteOutfit = DeleteOutfitUseCase(conFallos),
+            alternarFavorito = AlternarFavoritoUseCase(conFallos),
             suggestOutfits = SuggestOutfitsUseCase(observePrendas, sugeridor),
         )
         t.backgroundScope.launch(UnconfinedTestDispatcher(t.testScheduler)) { vm.uiState.collect { } }
@@ -237,7 +249,7 @@ class OutfitsViewModelTest {
         }
         val observePrendas = ObservePrendasUseCase(FakePrendaRepository())
         val vm = OutfitsViewModel(
-            ObserveOutfitsUseCase(repo), observePrendas, SaveOutfitUseCase(repo),
+            ObserveOutfitsUseCase(repo), observePrendas, SaveOutfitUseCase(repo), DeleteOutfitUseCase(repo), AlternarFavoritoUseCase(repo),
             SuggestOutfitsUseCase(observePrendas, SugeridorDePrueba(Result.success(emptyList()))),
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { vm.uiState.collect { } }
@@ -250,6 +262,63 @@ class OutfitsViewModelTest {
         assertIs<OutfitsUiState.Contenido>(vm.uiState.value)
     }
 
+    private fun OutfitsViewModel.guardado(id: String) = contenido().guardados.first { it.outfit.id == id }.outfit
+
+    @Test
+    fun elCorazonDeUnGuardadoLoMarcaYLoDesmarcaComoFavorito() = runTest {
+        val a = armar(this)
+        assertEquals(false, a.vm.guardado("o2").favorito)
+
+        a.vm.onEvent(OutfitsUiEvent.AlternarFavorito(a.vm.guardado("o2")))
+        assertEquals(true, a.vm.guardado("o2").favorito)
+
+        a.vm.onEvent(OutfitsUiEvent.AlternarFavorito(a.vm.guardado("o2")))
+        assertEquals(false, a.vm.guardado("o2").favorito)
+    }
+
+    @Test
+    fun alMarcarFavoritoNoSeTocanLasDemasPrendasNiOutfits() = runTest {
+        val a = armar(this)
+        val antes = a.vm.contenido().guardados.map { it.outfit.copy(favorito = false) }
+
+        a.vm.onEvent(OutfitsUiEvent.AlternarFavorito(a.vm.guardado("o3")))
+
+        assertEquals(antes, a.vm.contenido().guardados.map { it.outfit.copy(favorito = false) })
+    }
+
+    @Test
+    fun siFallaElFavoritoNoCambiaYSeAvisa() = runTest {
+        val a = armar(this)
+        a.outfits.errorEscrituraDeOtros = DomainException.SinPermisos
+
+        a.vm.onEvent(OutfitsUiEvent.AlternarFavorito(a.vm.guardado("o2")))
+
+        assertEquals(false, a.vm.guardado("o2").favorito)
+        assertEquals(OutfitsTextos.SIN_PERMISOS, a.vm.contenido().aviso)
+    }
+
+    @Test
+    fun eliminarQuitaElOutfitGuardadoPeroNoLasPrendas() = runTest {
+        val a = armar(this)
+
+        a.vm.onEvent(OutfitsUiEvent.Eliminar("o1"))
+
+        val estado = a.vm.contenido()
+        assertEquals(listOf("o2", "o3"), estado.guardados.map { it.outfit.id }.sorted())
+        // Las prendas siguen en el armario: el siguiente outfit que las usa las ve completas.
+        assertEquals(4, estado.guardados.first { it.outfit.id == "o2" }.prendas.size)
+    }
+
+    @Test
+    fun siFallaEliminarElOutfitSigueYSeAvisa() = runTest {
+        val a = armar(this)
+        a.outfits.errorEscrituraDeOtros = DomainException.SinConexion
+
+        a.vm.onEvent(OutfitsUiEvent.Eliminar("o1"))
+
+        assertEquals(3, a.vm.contenido().guardados.size)
+        assertEquals(OutfitsTextos.SIN_CONEXION, a.vm.contenido().aviso)
+    }
     @Test
     fun enEscritorioLoQueNoEstaDisponibleSeDiceTalCual() {
         val error = DomainException.Desconocido(UnsupportedOperationException("No disponible todavía en escritorio"))

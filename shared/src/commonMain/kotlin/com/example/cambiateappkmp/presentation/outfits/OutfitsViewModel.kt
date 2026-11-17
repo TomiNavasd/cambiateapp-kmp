@@ -6,6 +6,8 @@ import com.example.cambiateappkmp.domain.error.DomainException
 import com.example.cambiateappkmp.domain.model.Ocasion
 import com.example.cambiateappkmp.domain.model.Outfit
 import com.example.cambiateappkmp.domain.model.Prenda
+import com.example.cambiateappkmp.domain.usecase.AlternarFavoritoUseCase
+import com.example.cambiateappkmp.domain.usecase.DeleteOutfitUseCase
 import com.example.cambiateappkmp.domain.usecase.ObserveOutfitsUseCase
 import com.example.cambiateappkmp.domain.usecase.ObservePrendasUseCase
 import com.example.cambiateappkmp.domain.usecase.SaveOutfitUseCase
@@ -26,6 +28,8 @@ class OutfitsViewModel(
     observeOutfits: ObserveOutfitsUseCase,
     observePrendas: ObservePrendasUseCase,
     private val saveOutfit: SaveOutfitUseCase,
+    private val deleteOutfit: DeleteOutfitUseCase,
+    private val alternarFavorito: AlternarFavoritoUseCase,
     private val suggestOutfits: SuggestOutfitsUseCase,
 ) : ViewModel() {
 
@@ -57,6 +61,8 @@ class OutfitsViewModel(
             is OutfitsUiEvent.DescartarSugerencia -> local.update { actual ->
                 actual.copy(sugerencias = actual.sugerencias.filterIndexed { i, _ -> i != event.indice })
             }
+            is OutfitsUiEvent.AlternarFavorito -> cambiarFavorito(event.outfit)
+            is OutfitsUiEvent.Eliminar -> eliminar(event.id)
             OutfitsUiEvent.Reintentar -> reintento.update { it + 1 }
             OutfitsUiEvent.AvisoMostrado -> local.update { it.copy(aviso = null) }
         }
@@ -90,6 +96,18 @@ class OutfitsViewModel(
                 },
                 onFailure = { e -> local.update { it.copy(sugiriendo = false, aviso = e.aMensajeDeOutfits()) } },
             )
+        }
+    }
+
+    private fun cambiarFavorito(outfit: Outfit) {
+        viewModelScope.launch {
+            alternarFavorito(outfit).onFailure { e -> local.update { it.copy(aviso = e.aMensajeDeOutfits()) } }
+        }
+    }
+
+    private fun eliminar(id: String) {
+        viewModelScope.launch {
+            deleteOutfit(id).onFailure { e -> local.update { it.copy(aviso = e.aMensajeDeOutfits()) } }
         }
     }
 
