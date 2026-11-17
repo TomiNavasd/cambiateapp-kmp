@@ -1,12 +1,10 @@
 package com.example.cambiateappkmp.data.rest
 
+import com.example.cambiateappkmp.data.mapper.CAMPOS_EDITABLES_PRENDA
 import com.example.cambiateappkmp.data.remote.PrendaDto
 
-/**
- * Los campos que la app puede editar. Coincide con lo que guarda Android (sin userId, que no se puede cambiar).
- * La app nativa guarda más campos (etiquetas, temporada, etc.): al editar solo se tocan estos, así no se pisan.
- */
-internal val CAMPOS_EDITABLES_PRENDA = listOf("nombre", "descripcion", "categoria", "colores", "ocasiones", "fotoUrl")
+// CAMPOS_EDITABLES_PRENDA (compartido con Android) es la lista de campos que se tocan al editar, sin userId.
+// La app nativa guarda más campos (temporada, vecesUsada, etc.): al editar solo se tocan estos, así no se pisan.
 
 /** Los campos de una prenda, con los mismos nombres y tipos que usa Android en la colección prendas. */
 internal fun PrendaDto.aCamposFirestore(): Map<String, ValorFirestore> = mapOf(

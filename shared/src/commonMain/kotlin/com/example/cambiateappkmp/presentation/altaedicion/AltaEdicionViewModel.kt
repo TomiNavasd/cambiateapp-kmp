@@ -93,6 +93,7 @@ class AltaEdicionViewModel(
                             colores = prenda.colores.joinToString(", "),
                             ocasiones = prenda.ocasiones.toSet(),
                             fotoUrl = prenda.fotoUrl,
+                            etiquetas = prenda.etiquetas,
                         )
                     }
                 }
@@ -125,6 +126,7 @@ class AltaEdicionViewModel(
             colores = parsearColores(actual.colores),
             ocasiones = Ocasion.entries.filter { it in actual.ocasiones },
             fotoUrl = actual.fotoUrl,
+            etiquetas = actual.etiquetas,
         )
 
         viewModelScope.launch {

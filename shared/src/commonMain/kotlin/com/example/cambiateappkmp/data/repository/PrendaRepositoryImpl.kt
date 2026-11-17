@@ -1,6 +1,7 @@
 package com.example.cambiateappkmp.data.repository
 
 import com.example.cambiateappkmp.data.mapper.aDomain
+import com.example.cambiateappkmp.data.mapper.CAMPOS_EDITABLES_PRENDA
 import com.example.cambiateappkmp.data.mapper.aDomainException
 import com.example.cambiateappkmp.data.mapper.aDto
 import com.example.cambiateappkmp.data.remote.PrendaDto
@@ -72,7 +73,9 @@ class PrendaRepositoryImpl(
                 if (prenda.esNueva) {
                     coleccion.add(dto)
                 } else {
-                    coleccion.document(prenda.id).set(dto, merge = true)
+                    // Equivale al set con mergeFields de la nativa: solo se escriben los campos que edita la app,
+                    // así no se pisan temporada, vecesUsada, lugarCompra, lat, lng ni el userId.
+                    coleccion.document(prenda.id).set(dto, *CAMPOS_EDITABLES_PRENDA.toTypedArray())
                 }
             }
             if (terminado == null) {

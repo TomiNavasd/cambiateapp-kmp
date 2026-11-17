@@ -1,6 +1,7 @@
 package com.example.cambiateappkmp.data.rest
 
 import com.example.cambiateappkmp.data.config.ConfigFirebaseEscritorio
+import com.example.cambiateappkmp.data.mapper.CAMPOS_EDITABLES_PRENDA
 import com.example.cambiateappkmp.data.mapper.aDomain
 import com.example.cambiateappkmp.data.mapper.aDto
 import com.example.cambiateappkmp.domain.error.DomainException
