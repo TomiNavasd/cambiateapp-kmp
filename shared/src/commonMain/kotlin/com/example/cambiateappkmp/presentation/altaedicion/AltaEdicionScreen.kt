@@ -5,16 +5,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -135,6 +140,31 @@ private fun Formulario(
             )
         }
 
+        // Se habilita cuando hay foto subida; no se puede escanear mientras se guarda ni mientras ya se está analizando.
+        OutlinedButton(
+            onClick = { onEvent(AltaEdicionUiEvent.Escanear) },
+            enabled = state.fotoUrl.isNotBlank() && !state.analizando && !state.guardando,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+        ) {
+            if (state.analizando) {
+                CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                Spacer(Modifier.width(8.dp))
+                Text("Analizando la foto...", style = MaterialTheme.typography.labelLarge)
+            } else {
+                Text("Escanear prenda", style = MaterialTheme.typography.labelLarge)
+            }
+        }
+        if (state.avisoEscaneo != null) {
+            Text(
+                text = state.avisoEscaneo,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (state.avisoEscaneoEsError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+            )
+        }
+
         OutlinedTextField(
             value = state.nombre,
             onValueChange = { onEvent(AltaEdicionUiEvent.NombreCambio(it)) },
@@ -199,7 +229,7 @@ private fun Formulario(
 
         Button(
             onClick = { onEvent(AltaEdicionUiEvent.Guardar) },
-            enabled = !state.guardando,
+            enabled = !state.guardando && !state.analizando,
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()

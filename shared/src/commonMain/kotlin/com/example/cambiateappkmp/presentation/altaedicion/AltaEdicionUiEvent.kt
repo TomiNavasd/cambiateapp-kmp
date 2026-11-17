@@ -10,6 +10,8 @@ sealed interface AltaEdicionUiEvent {
     data class ColoresCambio(val valor: String) : AltaEdicionUiEvent
     data class OcasionAlternada(val ocasion: Ocasion) : AltaEdicionUiEvent
     data class FotoSubida(val url: String) : AltaEdicionUiEvent
+    /** Pide a la IA que analice la foto ya subida y complete los datos. */
+    data object Escanear : AltaEdicionUiEvent
     data object Guardar : AltaEdicionUiEvent
     data object ReintentarCarga : AltaEdicionUiEvent
 }
