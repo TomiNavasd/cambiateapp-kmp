@@ -320,6 +320,47 @@ class OutfitsViewModelTest {
         assertEquals(OutfitsTextos.SIN_CONEXION, a.vm.contenido().aviso)
     }
     @Test
+    fun elClimaQueLlegaDelMapaSeLePasaAlSugeridor() = runTest {
+        val a = armar(this)
+        val clima = ClimaActual(12.0, "Nublado", llueve = true)
+
+        a.vm.onEvent(OutfitsUiEvent.ClimaCambiado(clima))
+        a.vm.onEvent(OutfitsUiEvent.Sugerir)
+
+        assertEquals(clima, a.sugeridor.climaRecibido)
+    }
+
+    @Test
+    fun sinClimaElSugeridorRecibeNull() = runTest {
+        val a = armar(this)
+
+        a.vm.onEvent(OutfitsUiEvent.Sugerir)
+
+        assertEquals(1, a.sugeridor.llamadas)
+        assertNull(a.sugeridor.climaRecibido)
+    }
+
+    @Test
+    fun alEntrarOtraVezSinClimaYaNoSeUsaElAnterior() = runTest {
+        val a = armar(this)
+        a.vm.onEvent(OutfitsUiEvent.ClimaCambiado(ClimaActual(30.0, "Despejado", llueve = false)))
+        a.vm.onEvent(OutfitsUiEvent.ClimaCambiado(null))
+
+        a.vm.onEvent(OutfitsUiEvent.Sugerir)
+
+        assertNull(a.sugeridor.climaRecibido)
+    }
+
+    @Test
+    fun recibirElClimaNoPideSugerenciasSolo() = runTest {
+        val a = armar(this)
+
+        a.vm.onEvent(OutfitsUiEvent.ClimaCambiado(ClimaActual(5.0, "Frío", llueve = false)))
+
+        assertEquals(0, a.sugeridor.llamadas)
+        assertEquals(emptyList(), a.vm.contenido().sugerencias)
+    }
+    @Test
     fun enEscritorioLoQueNoEstaDisponibleSeDiceTalCual() {
         val error = DomainException.Desconocido(UnsupportedOperationException("No disponible todavía en escritorio"))
 

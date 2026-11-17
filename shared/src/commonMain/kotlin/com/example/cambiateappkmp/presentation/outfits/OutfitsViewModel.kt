@@ -3,6 +3,7 @@ package com.example.cambiateappkmp.presentation.outfits
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cambiateappkmp.domain.error.DomainException
+import com.example.cambiateappkmp.domain.model.ClimaActual
 import com.example.cambiateappkmp.domain.model.Ocasion
 import com.example.cambiateappkmp.domain.model.Outfit
 import com.example.cambiateappkmp.domain.model.Prenda
@@ -39,6 +40,7 @@ class OutfitsViewModel(
         val sugerencias: List<Outfit> = emptyList(),
         val sugiriendo: Boolean = false,
         val aviso: String? = null,
+        val clima: ClimaActual? = null,
     )
 
     private val local = MutableStateFlow(Local())
@@ -63,6 +65,7 @@ class OutfitsViewModel(
             }
             is OutfitsUiEvent.AlternarFavorito -> cambiarFavorito(event.outfit)
             is OutfitsUiEvent.Eliminar -> eliminar(event.id)
+            is OutfitsUiEvent.ClimaCambiado -> local.update { it.copy(clima = event.clima) }
             OutfitsUiEvent.Reintentar -> reintento.update { it + 1 }
             OutfitsUiEvent.AvisoMostrado -> local.update { it.copy(aviso = null) }
         }
@@ -82,9 +85,10 @@ class OutfitsViewModel(
 
     private fun sugerir() {
         val ocasion = local.value.ocasion
+        val clima = local.value.clima
         viewModelScope.launch {
             local.update { it.copy(sugiriendo = true, aviso = null) }
-            suggestOutfits(ocasion).fold(
+            suggestOutfits(ocasion, clima).fold(
                 onSuccess = { lista ->
                     local.update {
                         it.copy(

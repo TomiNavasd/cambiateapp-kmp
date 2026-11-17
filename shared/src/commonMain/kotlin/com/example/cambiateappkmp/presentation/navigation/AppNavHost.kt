@@ -107,7 +107,7 @@ private fun Pantalla(
                 onAjustesClick = { navegacion.ir(Ruta.Ajustes) },
             )
 
-            is Ruta.Outfits -> OutfitsRoute()
+            is Ruta.Outfits -> OutfitsRoute(clima = ruta.clima)
 
             Ruta.Mapa -> MapaConBarra(
                 onVolver = { navegacion.volver() },

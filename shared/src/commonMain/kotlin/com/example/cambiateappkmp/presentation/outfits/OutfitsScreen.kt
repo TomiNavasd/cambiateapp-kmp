@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.cambiateappkmp.domain.model.ClimaActual
 import com.example.cambiateappkmp.domain.model.Ocasion
 import com.example.cambiateappkmp.domain.model.nombreVisibleDeOutfit
 import com.example.cambiateappkmp.domain.model.temporadaTextoDeOutfit
@@ -67,8 +68,11 @@ import com.example.cambiateappkmp.presentation.wardrobe.etiqueta
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun OutfitsRoute(viewModel: OutfitsViewModel = koinViewModel()) {
+fun OutfitsRoute(clima: ClimaActual? = null, viewModel: OutfitsViewModel = koinViewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // El clima llega desde el Mapa (o es null si se entró por la pestaña): se lo pasamos al ViewModel para el próximo pedido.
+    LaunchedEffect(clima) { viewModel.onEvent(OutfitsUiEvent.ClimaCambiado(clima)) }
 
     OutfitsScreen(state = state, onEvent = viewModel::onEvent)
 }
