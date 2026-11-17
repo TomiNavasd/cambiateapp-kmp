@@ -6,6 +6,7 @@ import com.example.cambiateappkmp.data.location.UbicacionProviderJvm
 import com.example.cambiateappkmp.data.preferences.AlmacenClaveValor
 import com.example.cambiateappkmp.data.preferences.AlmacenClaveValorEnMemoria
 import com.example.cambiateappkmp.data.rest.AuthRepositoryRest
+import com.example.cambiateappkmp.data.rest.OutfitsRepositoryRest
 import com.example.cambiateappkmp.data.rest.PrendaRepositoryRest
 import com.example.cambiateappkmp.data.rest.TokenProvider
 import com.example.cambiateappkmp.domain.config.ApiKeys
@@ -14,6 +15,7 @@ import com.example.cambiateappkmp.domain.repository.AuthRepository
 import com.example.cambiateappkmp.domain.repository.ClimaRepository
 import com.example.cambiateappkmp.domain.repository.ImageStorageRepository
 import com.example.cambiateappkmp.domain.repository.LocalesRepository
+import com.example.cambiateappkmp.domain.repository.OutfitsRepository
 import com.example.cambiateappkmp.domain.repository.PrendaRepository
 import com.example.cambiateappkmp.domain.repository.PreferenciasRepository
 import com.example.cambiateappkmp.domain.repository.UbicacionProvider
@@ -83,6 +85,7 @@ class DesktopKoinTest {
     fun enEscritorioLosRepositoriosRealesSonLasVersionesRest() {
         assertIs<AuthRepositoryRest>(koin.get<AuthRepository>())
         assertIs<PrendaRepositoryRest>(koin.get<PrendaRepository>())
+        assertIs<OutfitsRepositoryRest>(koin.get<OutfitsRepository>())
         assertIs<UbicacionProviderJvm>(koin.get<UbicacionProvider>())
         // En escritorio el notificador existe pero no hace nada: no hay recordatorios.
         koin.get<Notificador>().apply { programarDiaria(20, 0); cancelarDiaria() }
