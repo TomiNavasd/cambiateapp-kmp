@@ -5,6 +5,7 @@ import com.example.cambiateappkmp.presentation.auth.LoginViewModel
 import com.example.cambiateappkmp.presentation.auth.RegisterViewModel
 import com.example.cambiateappkmp.presentation.detalle.DetallePrendaViewModel
 import com.example.cambiateappkmp.presentation.navigation.NavegacionViewModel
+import com.example.cambiateappkmp.presentation.outfits.OutfitsViewModel
 import com.example.cambiateappkmp.presentation.session.SessionViewModel
 import com.example.cambiateappkmp.presentation.wardrobe.WardrobeViewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -18,4 +19,5 @@ val presentationModule = module {
     viewModelOf(::WardrobeViewModel)
     viewModelOf(::DetallePrendaViewModel)
     viewModelOf(::AltaEdicionViewModel)
+    viewModelOf(::OutfitsViewModel)
 }
