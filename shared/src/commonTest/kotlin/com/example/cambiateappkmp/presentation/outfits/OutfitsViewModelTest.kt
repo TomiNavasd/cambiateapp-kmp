@@ -361,9 +361,12 @@ class OutfitsViewModelTest {
         assertEquals(emptyList(), a.vm.contenido().sugerencias)
     }
     @Test
-    fun enEscritorioLoQueNoEstaDisponibleSeDiceTalCual() {
-        val error = DomainException.Desconocido(UnsupportedOperationException("No disponible todavía en escritorio"))
-
-        assertEquals("No disponible todavía en escritorio", error.aMensajeDeOutfits())
+    fun cadaErrorDeDominioTieneSuMensajeYLoDemasEsInesperado() {
+        assertEquals(OutfitsTextos.SIN_CONEXION, DomainException.SinConexion.aMensajeDeOutfits())
+        assertEquals(OutfitsTextos.SESION_VENCIDA, DomainException.SesionNoIniciada.aMensajeDeOutfits())
+        assertEquals(OutfitsTextos.SIN_PERMISOS, DomainException.SinPermisos.aMensajeDeOutfits())
+        assertEquals(OutfitsTextos.YA_GUARDADO, DomainException.OutfitYaGuardado.aMensajeDeOutfits())
+        assertEquals(OutfitsTextos.INESPERADO, DomainException.Desconocido(IllegalStateException("x")).aMensajeDeOutfits())
+        assertEquals(OutfitsTextos.INESPERADO, IllegalStateException("x").aMensajeDeOutfits())
     }
 }

@@ -19,8 +19,5 @@ internal fun Throwable.aMensajeDeOutfits(): String = when (this) {
     is DomainException.SesionNoIniciada -> OutfitsTextos.SESION_VENCIDA
     is DomainException.SinPermisos -> OutfitsTextos.SIN_PERMISOS
     is DomainException.OutfitYaGuardado -> OutfitsTextos.YA_GUARDADO
-    // Lo que escritorio todavía no puede hacer se dice tal cual, en vez de "error inesperado".
-    is DomainException.Desconocido ->
-        (cause as? UnsupportedOperationException)?.message ?: OutfitsTextos.INESPERADO
     else -> OutfitsTextos.INESPERADO
 }
