@@ -43,8 +43,7 @@ fun WardrobeListRoute(
     onPrendaClick: (String) -> Unit,
     onNuevaClick: () -> Unit,
     onCerrarSesion: () -> Unit,
-    onMapaClick: (() -> Unit)? = null,
-    onAjustesClick: (() -> Unit)? = null,
+    onAjustesClick: () -> Unit,
     viewModel: WardrobeViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -55,7 +54,6 @@ fun WardrobeListRoute(
         onPrendaClick = onPrendaClick,
         onNuevaClick = onNuevaClick,
         onCerrarSesion = onCerrarSesion,
-        onMapaClick = onMapaClick,
         onAjustesClick = onAjustesClick,
     )
 }
@@ -69,8 +67,7 @@ fun WardrobeListScreen(
     onNuevaClick: () -> Unit,
     onCerrarSesion: () -> Unit,
     modifier: Modifier = Modifier,
-    onMapaClick: (() -> Unit)? = null,
-    onAjustesClick: (() -> Unit)? = null,
+    onAjustesClick: () -> Unit,
 ) {
     // Estado puramente visual (diálogo abierto): vive en la pantalla.
     var dialogoAbierto by remember { mutableStateOf(false) }
@@ -82,12 +79,7 @@ fun WardrobeListScreen(
             TopAppBar(
                 title = { Text("Mi armario", style = MaterialTheme.typography.headlineSmall) },
                 actions = {
-                    onMapaClick?.let { alClick ->
-                        TextButton(onClick = alClick, contentPadding = PaddingValues(horizontal = 8.dp)) { Text("Mapa") }
-                    }
-                    onAjustesClick?.let { alClick ->
-                        TextButton(onClick = alClick, contentPadding = PaddingValues(horizontal = 8.dp)) { Text("Ajustes") }
-                    }
+                    TextButton(onClick = onAjustesClick, contentPadding = PaddingValues(horizontal = 8.dp)) { Text("Ajustes") }
                     TextButton(onClick = { dialogoAbierto = true }) { Text("Cerrar sesión") }
                 },
             )
@@ -154,15 +146,11 @@ private fun ContenidoArmario(
     onEvent: (WardrobeUiEvent) -> Unit,
     onPrendaClick: (String) -> Unit,
 ) {
-    var texto by remember { mutableStateOf("") }
-
     Column(modifier = Modifier.fillMaxSize()) {
+        // El texto vive en el ViewModel: al cambiar de pestaña y volver, la búsqueda sigue ahí.
         OutlinedTextField(
-            value = texto,
-            onValueChange = {
-                texto = it
-                onEvent(WardrobeUiEvent.BusquedaCambiada(it))
-            },
+            value = state.consulta,
+            onValueChange = { onEvent(WardrobeUiEvent.BusquedaCambiada(it)) },
             label = { Text("Buscar prenda") },
             singleLine = true,
             modifier = Modifier
