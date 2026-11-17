@@ -1,5 +1,6 @@
 package com.example.cambiateappkmp.data.rest
 
+import com.example.cambiateappkmp.data.mapper.CAMPOS_EDITABLES_PRENDA
 import com.example.cambiateappkmp.data.mapper.aDomain
 import com.example.cambiateappkmp.data.mapper.aDto
 import com.example.cambiateappkmp.domain.model.Categoria
@@ -96,7 +97,7 @@ class FirestoreDocumentoTest {
         val campos = prenda.aDto("uid1").aCamposFirestore()
 
         assertEquals(
-            setOf("userId", "nombre", "descripcion", "categoria", "colores", "ocasiones", "fotoUrl"),
+            setOf("userId", "nombre", "descripcion", "categoria", "colores", "ocasiones", "fotoUrl", "etiquetas"),
             campos.keys,
         )
         assertEquals(ValorFirestore.Texto("uid1"), campos["userId"])

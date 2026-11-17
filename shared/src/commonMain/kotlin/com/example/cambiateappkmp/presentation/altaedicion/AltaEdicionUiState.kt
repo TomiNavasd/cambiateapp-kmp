@@ -15,6 +15,8 @@ data class AltaEdicionUiState(
     val colores: String = "",
     val ocasiones: Set<Ocasion> = emptySet(),
     val fotoUrl: String = "",
+    /** Etiquetas de la prenda: no se muestran ni se editan, se conservan para guardarlas sin cambios. */
+    val etiquetas: List<String> = emptyList(),
 
     val guardando: Boolean = false,
     val errorNombre: String? = null,

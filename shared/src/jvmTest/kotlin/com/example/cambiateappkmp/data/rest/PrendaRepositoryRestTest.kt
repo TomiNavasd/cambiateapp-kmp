@@ -1,6 +1,7 @@
 package com.example.cambiateappkmp.data.rest
 
 import com.example.cambiateappkmp.data.config.ConfigFirebaseEscritorio
+import com.example.cambiateappkmp.data.mapper.CAMPOS_EDITABLES_PRENDA
 import com.example.cambiateappkmp.domain.error.DomainException
 import com.example.cambiateappkmp.domain.model.Categoria
 import com.example.cambiateappkmp.domain.model.Ocasion
@@ -40,6 +41,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
@@ -243,7 +245,7 @@ class PrendaRepositoryRestTest {
         assertEquals("/v1/projects/proyecto/databases/(default)/documents/prendas", pedido.url.encodedPath)
         val campos = pedido.cuerpo()["fields"]!!.jsonObject
         assertEquals(
-            setOf("userId", "nombre", "descripcion", "categoria", "colores", "ocasiones", "fotoUrl"),
+            setOf("userId", "nombre", "descripcion", "categoria", "colores", "ocasiones", "fotoUrl", "etiquetas"),
             campos.keys,
         )
         assertEquals("uid1", campos["userId"]!!.jsonObject["stringValue"]!!.jsonPrimitive.content)
@@ -267,6 +269,52 @@ class PrendaRepositoryRestTest {
         val campos = pedido.cuerpo()["fields"]!!.jsonObject
         assertFalse("userId" in campos, "editar no debe tocar el userId")
         assertEquals("Remera editada", campos["nombre"]!!.jsonObject["stringValue"]!!.jsonPrimitive.content)
+    }
+
+    @Test
+    fun editarEscribeSoloLosCamposEditablesYNuncaLosDeLaNativa() = pruebaReal {
+        val repo = repo { respond(documento("p1", "Remera"), headers = json) }
+
+        repo.guardarPrenda(prendaNueva.copy(id = "p1", etiquetas = listOf("casual", "jean")))
+
+        val pedido = pedidos.single()
+        val campos = pedido.cuerpo()["fields"]!!.jsonObject
+        val mascara = pedido.url.parameters.getAll("updateMask.fieldPaths")!!.toSet()
+        val soloDeLaNativa = listOf("userId", "temporada", "vecesUsada", "ultimaVezUsada", "lugarCompra", "lat", "lng")
+
+        // El cuerpo y la máscara llevan exactamente los campos editables: lo demás queda como está en Firestore.
+        assertEquals(CAMPOS_EDITABLES_PRENDA.toSet(), campos.keys)
+        assertEquals(CAMPOS_EDITABLES_PRENDA.toSet(), mascara)
+        soloDeLaNativa.forEach {
+            assertFalse(it in campos, it)
+            assertFalse(it in mascara, it)
+        }
+        assertEquals(
+            listOf("casual", "jean"),
+            campos["etiquetas"]!!.jsonObject["arrayValue"]!!.jsonObject["values"]!!.jsonArray.map {
+                it.jsonObject["stringValue"]!!.jsonPrimitive.content
+            },
+        )
+    }
+
+    @Test
+    fun alEditarUnaPrendaDeLaNativaSeLeenSusEtiquetasYSeVuelvenAGuardarSinCambios() = pruebaReal {
+        val conEtiquetas = documento("p1", "Remera").replace(
+            """"fotoUrl":{"stringValue":""}""",
+            """"fotoUrl":{"stringValue":""},"temporada":{"stringValue":"verano"},"vecesUsada":{"integerValue":"3"},""" +
+                """"etiquetas":{"arrayValue":{"values":[{"stringValue":"liviano"},{"stringValue":"verano"}]}}""",
+        )
+        val repo = repo { respond(conEtiquetas, headers = json) }
+
+        val prenda = repo.obtenerPrenda("p1")!!
+        assertEquals(listOf("liviano", "verano"), prenda.etiquetas)
+
+        repo.guardarPrenda(prenda.copy(nombre = "Remera editada"))
+
+        val enviados = pedidos.last().cuerpo()["fields"]!!.jsonObject
+        assertFalse("temporada" in enviados)
+        assertFalse("vecesUsada" in enviados)
+        assertEquals(CAMPOS_EDITABLES_PRENDA.toSet(), enviados.keys)
     }
 
     @Test

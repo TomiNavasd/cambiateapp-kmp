@@ -14,11 +14,11 @@ fun normalizarBusqueda(texto: String): String = buildString {
     }
 }
 
-/** Una prenda coincide si la consulta aparece en su nombre, en el nombre de su categoría o en alguno de sus colores. */
+/** Una prenda coincide si la consulta aparece en su nombre, en el nombre de su categoría, en alguno de sus colores o en alguna de sus etiquetas (que el usuario no ve). */
 fun Prenda.coincideConBusqueda(consulta: String): Boolean {
     val buscado = normalizarBusqueda(consulta)
     if (buscado.isEmpty()) return true
-    val campos = listOf(nombre, categoria.etiqueta()) + colores
+    val campos = listOf(nombre, categoria.etiqueta()) + colores + etiquetas
     return campos.any { normalizarBusqueda(it).contains(buscado) }
 }
 
