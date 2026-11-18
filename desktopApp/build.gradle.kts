@@ -39,8 +39,19 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.example.cambiateappkmp"
+            packageName = "CambiateApp"
             packageVersion = "1.0.0"
+            description = "CambiateApp: armario digital con sugerencias de outfits"
+
+            // Íconos: .ico para Windows y .png para Linux (los dos salen de la misma imagen). Para macOS haría falta un .icns.
+            windows {
+                iconFile.set(project.file("src/main/resources/icon.ico"))
+                menuGroup = "CambiateApp"
+                shortcut = true
+            }
+            linux {
+                iconFile.set(project.file("src/main/resources/icon.png"))
+            }
         }
     }
 }
