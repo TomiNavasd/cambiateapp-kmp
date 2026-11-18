@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -59,6 +60,7 @@ fun EstadoVacio(
             onClick = onClick,
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
+                .widthIn(max = 360.dp)
                 .fillMaxWidth()
                 .height(52.dp),
         ) {
@@ -91,6 +93,7 @@ fun EstadoError(
             onClick = onReintentar,
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
+                .widthIn(max = 360.dp)
                 .fillMaxWidth()
                 .height(52.dp),
         ) {

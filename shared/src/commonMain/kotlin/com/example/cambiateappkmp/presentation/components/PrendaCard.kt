@@ -26,6 +26,8 @@ fun PrendaCard(
     fotoUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Proporción de la foto. En pantallas anchas se pide 1f (cuadrada); en el celular queda la de siempre, 4:5. */
+    aspecto: Float = 4f / 5f,
 ) {
     Card(
         onClick = onClick,
@@ -40,7 +42,7 @@ fun PrendaCard(
             url = fotoUrl,
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(4f / 5f),
+                .aspectRatio(aspecto),
         )
         Column(modifier = Modifier.padding(12.dp)) {
             Text(

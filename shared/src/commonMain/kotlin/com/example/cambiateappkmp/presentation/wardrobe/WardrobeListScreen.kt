@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -32,10 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cambiateappkmp.domain.model.Categoria
 import com.example.cambiateappkmp.presentation.components.CategoryChip
+import com.example.cambiateappkmp.presentation.components.ColumnasResponsivas
 import com.example.cambiateappkmp.presentation.components.EstadoCargando
 import com.example.cambiateappkmp.presentation.components.EstadoError
 import com.example.cambiateappkmp.presentation.components.EstadoVacio
 import com.example.cambiateappkmp.presentation.components.PrendaCard
+import com.example.cambiateappkmp.presentation.components.esPantallaAncha
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -187,8 +188,11 @@ private fun ContenidoArmario(
                 )
             }
         } else {
+            // En un celular: 2 columnas y fotos 4:5, como siempre. En pantallas anchas: tantas columnas como entren
+            // con celdas de al menos 170 dp y fotos cuadradas, para que las tarjetas no se estiren con la ventana.
+            val ancha = esPantallaAncha()
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+                columns = remember { ColumnasResponsivas(minSize = 170.dp) },
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -200,6 +204,7 @@ private fun ContenidoArmario(
                         categoria = prenda.categoria.etiqueta(),
                         fotoUrl = prenda.fotoUrl,
                         onClick = { onPrendaClick(prenda.id) },
+                        aspecto = if (ancha) 1f else 4f / 5f,
                     )
                 }
             }
