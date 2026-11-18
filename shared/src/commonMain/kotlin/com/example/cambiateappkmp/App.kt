@@ -8,7 +8,6 @@ import androidx.compose.runtime.getValue
 import com.example.cambiateappkmp.domain.model.TemaApp
 import com.example.cambiateappkmp.domain.notification.Notificador
 import com.example.cambiateappkmp.domain.repository.PreferenciasRepository
-import com.example.cambiateappkmp.presentation.components.ContenedorAnchoMaximo
 import com.example.cambiateappkmp.presentation.navigation.AppNavHost
 import com.example.cambiateappkmp.presentation.notificaciones.notificacionesDisponibles
 import com.example.cambiateappkmp.ui.theme.CambiateAppTheme
@@ -35,9 +34,6 @@ fun App() {
     }
 
     CambiateAppTheme(darkTheme = oscuro) {
-        // En ventanas anchas (escritorio) el contenido se centra y no pasa de 1100 dp; en un celular no cambia nada.
-        ContenedorAnchoMaximo {
-            AppNavHost()
-        }
+        AppNavHost()
     }
 }

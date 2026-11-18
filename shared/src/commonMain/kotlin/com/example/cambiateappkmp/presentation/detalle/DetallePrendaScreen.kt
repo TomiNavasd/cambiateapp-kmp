@@ -110,7 +110,7 @@ fun DetallePrendaScreen(
 
 @Composable
 private fun ContenidoDetalle(prenda: Prenda) {
-    // En pantallas anchas el contenido no pasa de 640 dp y la foto de 420 dp, centrados. En un celular no cambia nada.
+    // En pantallas anchas el contenido no pasa de 720 dp y la foto de 420 dp, centrados. En un celular no cambia nada.
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Column(
         modifier = Modifier

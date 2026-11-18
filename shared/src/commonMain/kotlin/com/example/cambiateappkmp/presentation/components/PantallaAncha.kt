@@ -24,14 +24,14 @@ import androidx.compose.ui.unit.dp
 /** A partir de este ancho de ventana la pantalla se considera "ancha". Un celular en vertical no llega. */
 val UMBRAL_PANTALLA_ANCHA: Dp = 600.dp
 
-/** Ancho máximo del contenido: en ventanas más anchas se centra y queda con márgenes a los costados. */
-val ANCHO_MAXIMO_CONTENIDO: Dp = 1100.dp
-
 /** Ancho máximo de la foto del detalle de una prenda. */
 val ANCHO_MAXIMO_FOTO_DETALLE: Dp = 420.dp
 
-/** Ancho máximo de los formularios y del detalle, que se leen mal si se estiran a toda la ventana. */
-val ANCHO_MAXIMO_FORMULARIO: Dp = 640.dp
+/**
+ * Ancho máximo del contenido de las pantallas que no son grilla (formularios, detalle, ajustes), que se leen mal si se
+ * estiran a toda la ventana. Solo se limita el contenido: el fondo y las barras siguen ocupando todo el ancho.
+ */
+val ANCHO_MAXIMO_FORMULARIO: Dp = 720.dp
 
 @Composable
 fun esPantallaAncha(): Boolean {
@@ -44,7 +44,7 @@ fun esPantallaAncha(): Boolean {
 @Composable
 fun ContenedorAnchoMaximo(
     modifier: Modifier = Modifier,
-    anchoMaximo: Dp = ANCHO_MAXIMO_CONTENIDO,
+    anchoMaximo: Dp = ANCHO_MAXIMO_FORMULARIO,
     contenido: @Composable () -> Unit,
 ) {
     Box(

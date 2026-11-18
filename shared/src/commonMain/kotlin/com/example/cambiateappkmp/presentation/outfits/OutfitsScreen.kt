@@ -58,6 +58,7 @@ import com.example.cambiateappkmp.domain.model.ClimaActual
 import com.example.cambiateappkmp.domain.model.Ocasion
 import com.example.cambiateappkmp.domain.model.nombreVisibleDeOutfit
 import com.example.cambiateappkmp.domain.model.temporadaTextoDeOutfit
+import com.example.cambiateappkmp.presentation.components.ANCHO_MAXIMO_FORMULARIO
 import com.example.cambiateappkmp.presentation.components.BotonCorazon
 import com.example.cambiateappkmp.presentation.components.CategoryChip
 import com.example.cambiateappkmp.presentation.components.ColumnasResponsivas
@@ -412,7 +413,8 @@ private fun DetalleOutfitSheet(
 ) {
     val temporada = item.prendas.temporadaTextoDeOutfit()
 
-    ModalBottomSheet(onDismissRequest = onCerrar) {
+    // En pantallas anchas la hoja no pasa de 720 dp y queda centrada.
+    ModalBottomSheet(onDismissRequest = onCerrar, sheetMaxWidth = ANCHO_MAXIMO_FORMULARIO) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),

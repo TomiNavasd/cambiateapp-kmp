@@ -58,7 +58,7 @@ fun AppNavHost(
 
         is SessionUiState.ConSesion -> ConSesion(sessionViewModel, navegacion)
 
-        // Login y registro: en pantallas anchas el formulario no pasa de 640 dp y queda centrado.
+        // Login y registro: en pantallas anchas el formulario no pasa de 720 dp y queda centrado.
         SessionUiState.SinSesion -> ContenedorAnchoMaximo(anchoMaximo = ANCHO_MAXIMO_FORMULARIO) {
             when (navegacion.actual) {
                 Ruta.Registro -> RegisterRoute(
