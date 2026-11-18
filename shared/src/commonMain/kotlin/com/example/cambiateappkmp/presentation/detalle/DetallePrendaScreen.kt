@@ -22,6 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.example.cambiateappkmp.presentation.components.esPantallaAncha
+import com.example.cambiateappkmp.presentation.components.ANCHO_MAXIMO_FOTO_DETALLE
+import com.example.cambiateappkmp.presentation.components.ANCHO_MAXIMO_FORMULARIO
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -104,20 +110,29 @@ fun DetallePrendaScreen(
 
 @Composable
 private fun ContenidoDetalle(prenda: Prenda) {
+    // En pantallas anchas el contenido no pasa de 720 dp y la foto de 420 dp, centrados. En un celular no cambia nada.
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Column(
         modifier = Modifier
+            .widthIn(max = ANCHO_MAXIMO_FORMULARIO)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        FotoPrenda(
-            url = prenda.fotoUrl,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(4f / 5f)
-                .clip(RoundedCornerShape(16.dp)),
-        )
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+            FotoPrenda(
+                url = prenda.fotoUrl,
+                anchoPx = 900,
+                recortar = false, // entera y con sus proporciones: en el detalle no se recorta
+                contentScale = if (esPantallaAncha()) ContentScale.Fit else ContentScale.Crop,
+                modifier = Modifier
+                    .widthIn(max = ANCHO_MAXIMO_FOTO_DETALLE)
+                    .fillMaxWidth()
+                    .aspectRatio(4f / 5f)
+                    .clip(RoundedCornerShape(16.dp)),
+            )
+        }
 
         Text(text = prenda.nombre, style = MaterialTheme.typography.headlineSmall)
 
@@ -146,6 +161,7 @@ private fun ContenidoDetalle(prenda: Prenda) {
                 .joinToString(", ") { it.etiqueta() }
                 .ifEmpty { "Sin especificar" },
         )
+    }
     }
 }
 

@@ -2,11 +2,13 @@ package com.example.cambiateappkmp.presentation.ajustes
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +27,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cambiateappkmp.domain.model.TemaApp
+import com.example.cambiateappkmp.presentation.components.ANCHO_MAXIMO_FORMULARIO
 import com.example.cambiateappkmp.presentation.notificaciones.notificacionesDisponibles
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -63,10 +66,12 @@ fun AjustesScreen(
             )
         },
     ) { padding ->
+        // En pantallas anchas el contenido no pasa de 720 dp y queda centrado; el fondo y la barra siguen de borde a borde.
+        Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.TopCenter) {
         Column(
             modifier = Modifier
+                .widthIn(max = ANCHO_MAXIMO_FORMULARIO)
                 .fillMaxSize()
-                .padding(padding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -112,6 +117,7 @@ fun AjustesScreen(
                     Text(text = "›", style = MaterialTheme.typography.titleLarge)
                 }
             }
+        }
         }
     }
 }

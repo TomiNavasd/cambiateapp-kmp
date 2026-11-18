@@ -20,6 +20,8 @@ import com.example.cambiateappkmp.presentation.ajustes.AjustesRoute
 import com.example.cambiateappkmp.presentation.altaedicion.AltaEdicionRoute
 import com.example.cambiateappkmp.presentation.auth.LoginRoute
 import com.example.cambiateappkmp.presentation.auth.RegisterRoute
+import com.example.cambiateappkmp.presentation.components.ANCHO_MAXIMO_FORMULARIO
+import com.example.cambiateappkmp.presentation.components.ContenedorAnchoMaximo
 import com.example.cambiateappkmp.presentation.components.PantallaCarga
 import com.example.cambiateappkmp.presentation.detalle.DetallePrendaRoute
 import com.example.cambiateappkmp.presentation.mapa.MapaRoute
@@ -56,14 +58,17 @@ fun AppNavHost(
 
         is SessionUiState.ConSesion -> ConSesion(sessionViewModel, navegacion)
 
-        SessionUiState.SinSesion -> when (navegacion.actual) {
-            Ruta.Registro -> RegisterRoute(
-                onIrALogin = { navegacion.volver() },
-            )
+        // Login y registro: en pantallas anchas el formulario no pasa de 720 dp y queda centrado.
+        SessionUiState.SinSesion -> ContenedorAnchoMaximo(anchoMaximo = ANCHO_MAXIMO_FORMULARIO) {
+            when (navegacion.actual) {
+                Ruta.Registro -> RegisterRoute(
+                    onIrALogin = { navegacion.volver() },
+                )
 
-            else -> LoginRoute(
-                onIrARegistro = { navegacion.ir(Ruta.Registro) },
-            )
+                else -> LoginRoute(
+                    onIrARegistro = { navegacion.ir(Ruta.Registro) },
+                )
+            }
         }
     }
 }

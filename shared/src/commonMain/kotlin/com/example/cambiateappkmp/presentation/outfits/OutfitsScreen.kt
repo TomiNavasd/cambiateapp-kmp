@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -59,8 +58,10 @@ import com.example.cambiateappkmp.domain.model.ClimaActual
 import com.example.cambiateappkmp.domain.model.Ocasion
 import com.example.cambiateappkmp.domain.model.nombreVisibleDeOutfit
 import com.example.cambiateappkmp.domain.model.temporadaTextoDeOutfit
+import com.example.cambiateappkmp.presentation.components.ANCHO_MAXIMO_FORMULARIO
 import com.example.cambiateappkmp.presentation.components.BotonCorazon
 import com.example.cambiateappkmp.presentation.components.CategoryChip
+import com.example.cambiateappkmp.presentation.components.ColumnasResponsivas
 import com.example.cambiateappkmp.presentation.components.EstadoCargando
 import com.example.cambiateappkmp.presentation.components.EstadoError
 import com.example.cambiateappkmp.presentation.components.FotoPrenda
@@ -163,7 +164,8 @@ private fun ContenidoOutfits(
 
     Column(modifier = Modifier.fillMaxSize()) {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            // Celular: 2 columnas, como siempre. Pantallas anchas: tantas como entren con tarjetas de al menos 240 dp.
+            columns = remember { ColumnasResponsivas(minSize = 240.dp) },
             modifier = Modifier.weight(1f).fillMaxWidth(),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -411,7 +413,8 @@ private fun DetalleOutfitSheet(
 ) {
     val temporada = item.prendas.temporadaTextoDeOutfit()
 
-    ModalBottomSheet(onDismissRequest = onCerrar) {
+    // En pantallas anchas la hoja no pasa de 720 dp y queda centrada.
+    ModalBottomSheet(onDismissRequest = onCerrar, sheetMaxWidth = ANCHO_MAXIMO_FORMULARIO) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),

@@ -28,7 +28,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.cambiateappkmp.presentation.components.ANCHO_MAXIMO_FORMULARIO
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cambiateappkmp.domain.model.Categoria
@@ -121,8 +124,11 @@ private fun Formulario(
     state: AltaEdicionUiState,
     onEvent: (AltaEdicionUiEvent) -> Unit,
 ) {
+    // En pantallas anchas el formulario no pasa de 720 dp y queda centrado. En un celular no cambia nada.
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Column(
         modifier = Modifier
+            .widthIn(max = ANCHO_MAXIMO_FORMULARIO)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
@@ -240,5 +246,6 @@ private fun Formulario(
                 style = MaterialTheme.typography.labelLarge,
             )
         }
+    }
     }
 }
