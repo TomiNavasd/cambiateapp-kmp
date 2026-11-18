@@ -1,14 +1,19 @@
 package com.example.cambiateappkmp
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.example.cambiateappkmp.data.config.ConfigFirebaseEscritorio
 import com.example.cambiateappkmp.data.config.DesktopApiKeys
 import com.example.cambiateappkmp.di.initKoin
 import com.example.cambiateappkmp.domain.config.ApiKeys
+import com.example.cambiateappkmp.presentation.components.configurarImagenesEscritorio
+import java.awt.Dimension
 import org.koin.dsl.module
 
 fun main() {
@@ -32,12 +37,17 @@ fun main() {
         )
     }
 
+    configurarImagenesEscritorio()
+
     application {
+        // Ventana inicial de 1100 x 760 dp, centrada en la pantalla, y no se puede achicar por debajo de 800 x 600.
+        val estadoVentana = rememberWindowState(position = WindowPosition(Alignment.Center), size = DpSize(1100.dp, 760.dp))
         Window(
             onCloseRequest = ::exitApplication,
             title = "CambiateApp",
-            state = rememberWindowState(size = DpSize(480.dp, 900.dp)),
+            state = estadoVentana,
         ) {
+            LaunchedEffect(Unit) { window.minimumSize = Dimension(800, 600) }
             App()
         }
     }
